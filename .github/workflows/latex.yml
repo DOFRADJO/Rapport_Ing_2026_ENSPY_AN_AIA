@@ -1,0 +1,29 @@
+name: Build LaTeX Thesis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Compiler le document LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: memoirthesis.tex
+          args: "-pdf -file-line-error -interaction=nonstopmode"
+
+      - name: Renommer le PDF généré
+        run: mv memoirthesis.pdf Rapport_Ing_Tambou_Donald_2026_AIA.pdf
+
+      - name: Sauvegarder le PDF en Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rapport-Ing-Tambou-Donald-2026-AIA
+          path: Rapport_Ing_Tambou_Donald_2026_AIA.pdf
