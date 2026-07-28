@@ -1,0 +1,97 @@
+%
+% File: Title.tex
+% Author: V?ctor Bre?a-Medina
+% Description: Contains the title page
+%
+% UoB guidelines:
+% 
+% At the top of the title page, within the margins, the dissertation should give the title and, if 
+% necessary, sub-title and volume number. If the dissertation is in a language other than English, the 
+% title must be given in that language and in English. The full name of the author should be in the 
+% centre of the page. At the bottom centre should be the words ?A dissertation submitted to the 
+% University of Bristol in accordance with the requirements for award of the degree of ? in the 
+% Faculty of ...?, with the name of the school and month and year of submission. The word count of 
+% the dissertation (text only) should be entered at the bottom right-hand side of the page.
+%
+%
+%\hspace{5cm}
+%\pagecolor{fondpaille}\afterpage{\nopagecolor}
+\begin{titlingpage}
+\begin{SingleSpace}
+
+%\calccentering{\unitlength} 
+\begin{adjustwidth*}{\unitlength}{-\unitlength}
+\begin{figure*}
+\centering 
+%\includegraphics[scale=0.5]{fig/lip.png} \\
+
+\begin{minipage}[c]{.46\linewidth}
+     \begin{center}
+             \includegraphics[width=4cm]{logos/enspy.png}
+         \end{center}
+   \end{minipage} \hfill
+   \begin{minipage}[c]{0.46\linewidth}
+    \begin{center}
+             \includegraphics[width=6cm]{frontmatter/logo_vert_orange.png}
+        \end{center} 
+ \end{minipage}
+ 
+\end{figure*}
+
+\hspace{1cm}
+\vspace{0.5cm}
+\begin{center}
+\vspace{0.3cm}
+
+% Top green lines
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{1pt}}\\[-\baselineskip]
+\vspace{3.2pt}
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{2pt}}\\
+
+% Title with increased line spacing
+{\linespread{1.5}\selectfont
+    {\fontsize{15pt}{17pt}\selectfont \textcolor{darkgray}{
+    \textsc{\textbf{Conception d'une architecture MLOps Cloud sur AWS}}
+}}\\
+}
+
+% Bottom green lines
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{1pt}}\\[-\baselineskip]
+\vspace{3.2pt}
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{2pt}}\\
+\vspace{4mm}
+
+% Subtitle
+{\Large \textbf{Mémoire de fin d'études}}\\
+\vspace{0.4cm}
+
+% Author name
+
+{\normalsize \underline{ Présenté et soutenu par }} \\
+\vspace{2mm}
+{\large\textcolor{darkgray}{\textsc{\textbf{{ TAMBOU DJOMOU FRANCK DONALD }}}}\\
+\vspace{6mm}}
+
+{\normalsize \underline{\textbf{Matricule :}} 23P732} \\
+\vspace{6mm}
+
+% Degree information
+{\normalsize \underline{En vue de l’obtention du :}}\\
+\vspace{4mm}
+{\large \textcolor{darkgray}{\textsc{\textbf{Diplôme d’Ingénieur de Conception en Arts Numériques option : Arts et
+Intelligence Artificielle}}}}\\
+\vspace{30mm}
+
+
+
+\begin{tabular}{c}
+{\large \textcolor{darkgray}{Année académique 2025-2026}}\\ \\
+{\large \textcolor{darkgray}{Mémoire soutenu en Juillet 2026}}
+\end{tabular}
+
+\end{center}
+
+\end{adjustwidth*}
+
+\end{SingleSpace}
+\end{titlingpage}

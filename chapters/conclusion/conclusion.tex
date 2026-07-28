@@ -1,0 +1,31 @@
+\chapter*{CONCLUSION GÉNÉRALE}
+\label{chap:conclusion}
+\markboth{Conclusion Générale}{}
+\addstarredchapter{Conclusion Générale}
+Cette dernière section résume les principales contributions du projet, met en évidence ses limites et décrit les perspectives futures et un plan d'amélioration à partir du système existant.
+
+\section*{Rappel du problème}
+
+Le présent travail s'est concentré sur la résolution des problèmes de saturation matérielle rencontrés par le client de DESEMITS. L'enjeu principal était d'industrialiser un modèle expérimental de vision par ordinateur, dont l'exploitation en production était freinée par les limites de calcul et de mémoire d'une exécution locale monolithique, incapable de traiter l'augmentation massive des images agricoles.
+
+\section*{Solution : Démarche, résultats et intérêt}
+
+Pour surmonter ces obstacles, notre démarche s'est appuyée sur les principes du \textit{Machine Learning Operations} (MLOps) et du calcul distribué. L'analyse des travaux existants a guidé la conception d'une architecture Cloud sur-mesure, dissociant strictement le stockage massif (Amazon S3) de la puissance de calcul (Amazon EMR). L'implémentation de cette solution à l'aide d'Apache Spark a permis de paralléliser efficacement le prétraitement par réduction de dimension (ACP) et l'inférence du réseau de neurones convolutifs.
+
+Les résultats obtenus valident notre hypothèse de départ : le couplage de services Cloud managés et de pipelines distribués permet non seulement d'assurer le passage à l'échelle du système, mais également de maîtriser drastiquement les coûts opérationnels (FinOps) grâce à l'allocation éphémère des clusters.
+
+\section*{Limites}
+
+Bien que les résultats obtenus posent les fondations robustes d'un système intelligent et hautement disponible, ce travail présente certaines limites. Tout d'abord, l'architecture nécessite encore d'être éprouvée sur des volumétries de données plus extrêmes. Par la suite, le déploiement manuel de l'infrastructure via la console par l'administrateur, ainsi que la nécessité pour l'opérateur métier d'exécuter manuellement ses scripts, constituent un frein à l'automatisation complète du cycle de vie du modèle. Ces limites opérationnelles sont autant de défis qui restent à relever.
+
+\section*{Perspectives d’amélioration}
+
+Pour pallier ces limites et poursuivre l'industrialisation du système, les perspectives futures incluent l'intégration de nouveaux outils visant l'automatisation totale :
+
+\begin{itemize}
+    \item[$\bullet$] \textbf{Automatisation de l'infrastructure :} Le déploiement du cluster, aujourd'hui manuel, pourrait être entièrement scripté via l'Infrastructure as Code (IaC), permettant un déclenchement automatique dès l'arrivée de nouvelles images sur S3.
+    \item[$\bullet$] \textbf{Orchestration des Workflows :} L'intégration d'un outil comme \textbf{Apache Airflow} permettrait d'enchaîner automatiquement les différentes étapes du pipeline sans exécution manuelle des scripts Jupyter.
+    \item[$\bullet$] \textbf{Gouvernance MLOps complète :} L'ajout d'outils tels que \textbf{MLflow} ou \textbf{Amazon SageMaker Pipelines} constituerait une évolution naturelle pour automatiser le réentraînement des modèles (Continuous Training) et assurer un contrôle strict du versionnage des algorithmes au fil des saisons agricoles.
+\end{itemize}
+
+En ouvrant la voie à l'intégration de ces outils de surveillance et de réentraînement continu, ce travail démontre que l'avenir de l'intelligence artificielle ne réside plus uniquement dans l'optimisation des algorithmes, mais dans l'excellence de l'ingénierie logicielle et Cloud qui les supporte.

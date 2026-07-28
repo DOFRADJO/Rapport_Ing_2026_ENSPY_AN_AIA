@@ -1,0 +1,130 @@
+\let\textcircled=\pgftextcircled
+% \section{Approach and Development Methodology}
+% To tackle the challenges of taxpayer verification and compliance scoring, we adopted a structured approach that combines analysis of key indicators and system design. Our process focuses on clearly defining involved entities, identify risk-related factors and defining scoring mechanisms. \\
+
+% For the implementation phase,  we applied the Scrum framework, a lightweight agile method suited for managing complex product development. Scrum promotes incremental development through short, iterative cycles called sprints, which encourage flexibility and continuos feedback. It's working principle is presented as follows :
+\chapter{Méthodologie de conception}
+\label{chap:methodologie}
+\textit{\initial{C}e chapitre détaille l'approche adoptée pour répondre à la problématique d'industrialisation du modèle de vision par ordinateur. Il débute par l'exposition de la méthodologie de développement, suivie d'une analyse approfondie du problème à travers la définition des besoins et des acteurs. Enfin, il présente la modélisation de la solution retenue en détaillant ses architectures logique et physique sur le Cloud AWS.}
+
+\renewcommand{\mtctitle}{Sommaire}
+\minitoc
+\newpage
+
+% ==============================================================================
+\section{Méthodologie de développement}
+% ==============================================================================
+
+Pour mener à bien la transition d'un modèle expérimental vers un système robuste en production, nous avons adopté une méthodologie de développement itérative inspirée des principes agiles et du cadre de référence MLOps. 
+
+Contrairement au génie logiciel classique (DevOps) où le cycle de développement est linéaire, l'ingénierie des systèmes d'intelligence artificielle nécessite une approche en boucle fermée. Notre méthodologie s'articule autour de trois phases continues :
+\begin{enumerate}
+    \item[$\bullet$] \textbf{L'expérimentation et le prototypage :} Analyse du code local existant (Preuve de Concept) et identification des goulots d'étranglement (saturation mémoire, temps de calcul).
+    \item[$\bullet$] \textbf{L'ingénierie des données et du modèle :} Refactorisation du code séquentiel vers un paradigme de calcul distribué (PySpark) permettant le passage à l'échelle du prétraitement et de l'inférence.
+    \item[$\bullet$] \textbf{L'industrialisation Cloud :} Déploiement et configuration manuelle de l'infrastructure sur Amazon Web Services (AWS) via la console d'administration. Cette phase inclut la mise en place des espaces de travail (\textit{workspaces}), l'orchestration des pipelines et l'optimisation des coûts (FinOps).
+\end{enumerate}
+
+Cette méthode garantit que chaque composant de l'architecture est testé et validé indépendamment avant son intégration dans le pipeline global, assurant ainsi une évolutivité et une maintenabilité optimales du système.
+
+% ==============================================================================
+\section{Analyse du problème}
+% ==============================================================================
+
+Le projet s'appuie initialement sur un algorithme de détection d'anomalies sur des images agricoles, exécuté de manière séquentielle sur une machine locale. Face à la croissance exponentielle du volume d'images issues des récoltes, cette approche monolithique sature la mémoire vive (RAM) et le processeur (CPU), rendant les temps de traitement critiques et l'exploitation en production impossible. Pour pallier ces limites, une analyse rigoureuse des besoins a été menée.
+
+\subsection{Besoins fonctionnels}
+Les besoins fonctionnels définissent les actions que le système MLOps doit impérativement accomplir pour automatiser le cycle de vie du modèle :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Stockage massif et centralisé :} Ingestion et archivage sécurisé de plusieurs téraoctets d'images brutes et de modèles dans un Data Lake.
+    \item[$\bullet$] \textbf{Prétraitement distribué :} Capacité à redimensionner, nettoyer et transformer les images en parallèle. Le système doit intégrer une étape de réduction de dimensionnalité (Analyse en Composantes Principales - ACP) pour extraire les caractéristiques visuelles pertinentes et alléger la charge de calcul.
+    \item[$\bullet$] \textbf{Espaces de travail (Workspaces) :} Fournir un environnement de développement interactif permettant à l'opérateur métier de faire évoluer le modèle.
+    \item[$\bullet$] \textbf{Inférence à grande échelle :} Distribution des calculs et diffusion des poids (\textit{Broadcast weights}) du réseau de neurones sur un cluster de machines pour paralléliser les prédictions.
+    \item[$\bullet$] \textbf{Restitution des résultats :} Sauvegarde automatisée des prédictions générées pour permettre leur consultation.
+\end{itemize}
+
+\subsection{Besoins non fonctionnels}
+Les exigences non fonctionnelles dictent les contraintes techniques, budgétaires et réglementaires imposées à l'architecture :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Scalabilité :} Le système doit s'adapter dynamiquement à la charge de travail (élasticité) sans dégradation des performances.
+    \item[$\bullet$] \textbf{Optimisation FinOps :} Le coût d'exploitation des serveurs Cloud doit être maintenu au strict minimum (inférieur à 10 euros par cycle). L'infrastructure de calcul doit être éphémère pour éviter la facturation de ressources inactives.
+    \item[$\bullet$] \textbf{Souveraineté et sécurité (RGPD) :} Conformément aux exigences européennes, l'ensemble des données doit être stocké et traité physiquement sur des serveurs situés en Europe, avec un chiffrement robuste et un contrôle d'accès strict.
+    \item[$\bullet$] \textbf{Tolérance aux pannes :} L'architecture doit être résiliente et capable de redistribuer le calcul en cas de défaillance d'un nœud du cluster.
+\end{itemize}
+
+\subsection{Acteurs du système}
+Le fonctionnement de l'architecture implique l'interaction de deux profils d'acteurs principaux, résumés dans le tableau \ref{tab:acteurs}.
+
+\begin{table}[H]
+\centering
+\caption{Description des acteurs du système}
+\label{tab:acteurs}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Acteur} & \textbf{Responsabilités} \\
+\hline
+\textbf{Opérateur métier} & Se connecte à l'espace de travail Cloud (\textit{workspace}) pour développer et faire évoluer le modèle d'IA. Il dépose les jeux d'images agricoles brutes, déclenche les traitements analytiques distribués et exploite les résultats de détection d'anomalies. \\
+\hline
+\textbf{Administrateur Cloud} & Conçoit, déploie et supervise l'infrastructure AWS de manière entièrement manuelle (via la console). Il s'assure de la bonne allocation des clusters, configure les réseaux, gère la sécurité et surveille les coûts (FinOps). \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Diagramme de cas d'utilisation}
+La modélisation UML permet de cartographier formellement les interactions entre les acteurs et le système. Le diagramme de cas d'utilisation (Figure \ref{fig:usecase}) illustre le périmètre fonctionnel de l'application. Il met en évidence la séparation des rôles : l'opérateur métier se connecte à son environnement pour faire évoluer le modèle et traiter les données, tandis que l'administrateur Cloud possède les privilèges nécessaires pour gérer manuellement le cycle de vie de l'infrastructure sous-jacente.
+
+% 🛠️ À FAIRE : Insérer le Diagramme de Cas d'Utilisation
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{chapters/chapter03/fig03/2-3-Architecture_MLOps_Cas_d_Utilisation.png}
+    %\rule{0.85\textwidth}{6cm} % Ligne à supprimer quand l'image sera insérée
+    \caption{Diagramme de cas d'utilisation du système MLOps}
+    \label{fig:usecase}
+\end{figure}
+
+% ==============================================================================
+\section{Conception de la solution}
+% ==============================================================================
+
+Sur la base de l'analyse des besoins, nous avons conçu une architecture Cloud distribuée permettant de résoudre les problèmes de saturation locale. Le principe fondamental de cette conception est le \textbf{découplage strict entre le stockage et le calcul}, une bonne pratique incontournable dans l'ingénierie des données massives.
+
+\subsection{Architecture logique}
+L'architecture logique définit le flux de traitement des données, abstraction faite des serveurs physiques. Le pipeline est modélisé comme un graphe orienté composé de plusieurs étapes séquentielles et parallèles. 
+L'utilisateur dépose un jeu d'images brutes dans le référentiel central (Data Lake). Ce dépôt permet l'instanciation du moteur de calcul distribué (Apache Spark). Ce dernier procède d'abord à la préparation des données et à la réduction de dimensionnalité (ACP). Les caractéristiques extraites sont ensuite transmises au modèle d'intelligence artificielle pour l'inférence ou l'apprentissage continu. Enfin, les résultats prédictifs sont sauvegardés dans le Data Lake, clôturant ainsi le cycle logique.
+
+% 🛠️ À FAIRE : Insérer l'Architecture Logique
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{chapters/chapter03/fig03/2-7-architecture_logique.png}
+    %\rule{0.9\textwidth}{7cm} % Ligne à supprimer quand l'image sera insérée
+    \caption{Architecture logique du pipeline MLOps}
+    \label{fig:architecture_logique}
+\end{figure}
+
+\subsection{Architecture physique}
+L'architecture physique matérialise le flux logique. Conçue pour être déployée manuellement par l'administrateur via la console Amazon Web Services (AWS), elle s'articule autour de cinq services fondamentaux garantissant la sécurité, la scalabilité et la supervision du système :
+
+\begin{itemize}
+    \item[$\bullet$] \textbf{Amazon VPC (Virtual Private Cloud) :} Représente la couche réseau de l'architecture. Le cluster de calcul et les espaces de travail (\textit{workspaces}) sont isolés dans un réseau privé virtuel, permettant de contrôler strictement le trafic entrant et sortant et de protéger les données sensibles.
+    \item[$\bullet$] \textbf{Amazon S3 (Simple Storage Service) :} Agit comme le Data Lake unifié. Il stocke les images brutes, les données prétraitées et les résultats. Déployé dans une région européenne, il permet au système de répondre nativement aux exigences de souveraineté et de conformité au RGPD.
+    \item[$\bullet$] \textbf{Amazon EMR (Elastic MapReduce) :} Constitue le cœur du calcul distribué. Pour répondre au besoin d'optimisation FinOps, ce cluster est instancié de manière éphémère. Il est composé d'un \textit{Master Node} (orchestrateur) et de \textit{Worker Nodes} (nœuds de travail) utilisant des instances "Spot" (capacité excédentaire d'AWS), ce qui réduit drastiquement les coûts de calcul.
+    \item[$\bullet$] \textbf{AWS IAM (Identity and Access Management) :} Assure la sécurité et la gouvernance. L'administrateur crée manuellement des rôles IAM basés sur le principe du moindre privilège, s'assurant par exemple que le cluster EMR ne possède des droits d'accès qu'au bucket S3 dédié au projet.
+    \item[$\bullet$] \textbf{Amazon CloudWatch :} Représente le module de supervision. Il permet à l'administrateur Cloud de collecter les journaux d'exécution (logs), de surveiller l'état de santé du matériel (utilisation CPU/RAM des instances EC2) et de s'assurer que les dépenses restent dans les limites du budget.
+\end{itemize}
+
+% 🛠️ À FAIRE : Insérer l'Architecture Physique AWS
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{chapters/chapter03/fig03/2-8-architecture-physique.png}
+    %\rule{0.9\textwidth}{7cm} % Ligne à supprimer quand l'image sera insérée
+    \caption{Architecture physique déployée sur Amazon Web Services}
+    \label{fig:architecture_physique}
+\end{figure}
+
+% ==============================================================================
+\section{Résumé du chapitre}
+% ==============================================================================
+
+Ce chapitre a permis de traduire la problématique d'ingénierie soulevée par le client en une solution technique concrète et modélisée. En appliquant une méthodologie de développement itérative, nous avons identifié les limites de l'approche locale et formalisé des besoins stricts en matière de scalabilité, de sécurité (RGPD) et d'optimisation financière (FinOps). 
+
+L'analyse des acteurs a clarifié l'utilisation du système, avec un opérateur métier exploitant un espace de travail Cloud pour faire évoluer le modèle, et un administrateur Cloud assurant la gestion manuelle de l'infrastructure. La conception architecturale a mis en évidence le rôle de cinq services clés d'AWS (VPC, S3, EMR, IAM, CloudWatch) pour orchestrer de manière sécurisée et économique le découplage entre le calcul et le stockage. Ces fondations étant désormais établies, le chapitre suivant sera consacré à l'implémentation pratique de cette architecture et à l'évaluation de ses performances.

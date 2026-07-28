@@ -1,0 +1,31 @@
+\chapter*{Glossaire}
+\addstarredchapter{Glossaire}
+\markboth{Glossaire}{}
+\adjustmtc
+
+\begin{itemize}
+    \item[$\bullet$] \textbf{Cluster (Grappe de serveurs) :} Ensemble d'ordinateurs virtuels ou physiques (nœuds) interconnectés qui travaillent de concert pour exécuter des tâches de calcul distribué, comme le permet le service Amazon EMR \cite{11, 50}.
+    
+    \item[$\bullet$] \textbf{Data Lake (Lac de données) :} Référentiel centralisé (tel qu'Amazon S3) permettant de stocker d'immenses volumes de données brutes, structurées ou non structurées, à n'importe quelle échelle et de manière hautement durable \cite{10, 19}.
+    
+    \item[$\bullet$] \textbf{Dérive des données (Data Drift) :} Phénomène par lequel les propriétés statistiques des données en production changent au fil du temps par rapport aux données d'entraînement, entraînant une dégradation des performances du modèle \cite{36, 43}.
+    
+    \item[$\bullet$] \textbf{Hyperparamètre :} Paramètre dont la valeur est définie avant le début du processus d'apprentissage d'un modèle et qui contrôle la manière dont l'algorithme apprend \cite{23, 43}.
+    
+    \item[$\bullet$] \textbf{Inférence :} Phase de production durant laquelle un modèle d'apprentissage automatique préalablement entraîné est utilisé pour analyser de nouvelles données et générer des prédictions \cite{47, 62}.
+    
+    \item[$\bullet$] \textbf{Instance Spot :} Capacité de calcul informatique excédentaire proposée par un fournisseur Cloud (comme AWS) à un tarif très réduit par rapport au prix classique, couramment utilisée pour l'optimisation FinOps \cite{23, 60}.
+    
+    \item[$\bullet$] \textbf{Microservices :} Architecture logicielle consistant à structurer un système complexe (comme un pipeline MLOps) en un ensemble de petits services indépendants, déployables séparément et faiblement couplés \cite{46, 63}.
+    
+    \item[$\bullet$] \textbf{Nœud (Node) :} Une machine individuelle (serveur virtuel) faisant partie d'un cluster de calcul. On distingue souvent le nœud maître (qui orchestre) des nœuds travailleurs (qui exécutent les calculs en parallèle) \cite{11, 50}.
+    
+    \item[$\bullet$] \textbf{Orchestrateur :} Outil logiciel (comme Apache Airflow ou AWS Step Functions) permettant d'automatiser, de planifier et de coordonner l'exécution de flux de travaux complexes de manière séquentielle ou parallèle \cite{18, 53}.
+    
+    \item[$\bullet$] \textbf{Passage à l'échelle (Scalabilité) :} Capacité d'une architecture informatique à s'adapter dynamiquement à une augmentation massive de la charge de travail (volume de données) sans perte de performances \cite{2, 60}.
+    
+    \item[$\bullet$] \textbf{Pipeline :} Chaîne de traitement informatique automatisée où la sortie d'une étape sert directement d'entrée à l'étape suivante, structurant ainsi le flux de préparation des données et d'apprentissage \cite{32, 38}.
+    
+    \item[$\bullet$] \textbf{Preuve de Concept (PoC) :} Réalisation expérimentale (souvent sur une machine locale) d'un modèle d'IA visant uniquement à démontrer sa faisabilité théorique ou mathématique avant son industrialisation \cite{39, 44}.
+\end{itemize}
+

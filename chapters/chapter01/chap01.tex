@@ -1,0 +1,61 @@
+% \let\textcircled=\pgftextcircled
+\chapter*{Introduction générale}
+\label{chap:introduction}
+\addstarredchapter{Introduction générale}
+\markboth{Introduction générale}{}
+\adjustmtc
+
+\section*{CONTEXTE}
+\initial{L}'intelligence artificielle (IA) et plus particulièrement l'apprentissage automatique (Machine Learning) connaissent aujourd'hui un essor fulgurant, transformant en profondeur la manière dont les organisations exploitent leurs données. Cependant, si le développement de modèles d'IA performants en laboratoire est devenu monnaie courante, leur passage à l'échelle et leur déploiement en environnement de production restent des défis technologiques majeurs. En effet, les modèles déployés sont confrontés à des volumes de données massifs et à une dégradation inévitable de leurs performances dans le temps, un phénomène connu sous le nom de dérive des données \cite{1}. Pour surmonter ces obstacles, l'industrie s'oriente massivement vers le Cloud Computing, qui offre une puissance de calcul et de stockage à la demande, et vers les pratiques du MLOps (\textit{Machine Learning Operations}). Le MLOps unifie le développement des systèmes d'apprentissage automatique et leur exploitation, permettant d'automatiser le cycle de vie des modèles, de leur entraînement initial jusqu'à leur supervision et leur réentraînement continu \cite{1}. C'est dans ce contexte d'industrialisation que s'inscrit le besoin de concevoir des architectures robustes, capables de soutenir des pipelines de données complexes tout en garantissant la fiabilité et la reproductibilité des déploiements.
+
+\section*{PROBLÉMATIQUE}
+Si le Cloud Computing et le MLOps offrent des outils puissants pour industrialiser l'intelligence artificielle, leur application concrète soulève des problématiques d'ingénierie critiques. Les architectures traditionnelles ou locales saturent rapidement face à l'augmentation des flux de données. De plus, un modèle figé perd inévitablement en précision face à l'évolution des données du monde réel. L'absence d'une boucle de rétroaction permettant l'apprentissage continu entraîne souvent une maintenance complexe, un déclin des prédictions et une explosion des coûts opérationnels \cite{1}. 
+
+\vspace{2.5mm}
+Dans ce contexte, une question centrale émerge :
+\vspace{2mm}
+
+\begin{tcolorbox}[colback=green!5!white, colframe=green!80!black, arc=3mm, boxrule=1mm, title=\textbf{Problématique centrale}]
+\itshape Comment concevoir une architecture MLOps Cloud sur AWS qui permette la continuité d'apprentissage d’un modèle et de garantir son passage à l’échelle face à des données massives, tout en optimisant les performances et les coûts d’exploitation ?
+\end{tcolorbox}
+
+\vspace{2.5mm}
+
+\section*{OBJECTIFS DU MEMOIRE}
+L'objectif principal de ce mémoire est de concevoir et d'implémenter une architecture Cloud MLOps sur AWS permettant l'industrialisation et l'apprentissage continu d'un modèle d'intelligence artificielle. Cela passera par les objectifs spécifiques suivants :
+\vspace{2mm}
+\begin{itemize}
+    \item[$\bullet$] Analyser et comparer les principales plateformes Cloud et approches MLOps existantes afin de justifier les choix technologiques retenus.
+    \item[$\bullet$] Concevoir une architecture distribuée découplant strictement les ressources de stockage et les ressources de calcul pour garantir un passage à l'échelle optimal.
+    \item[$\bullet$] Modéliser un pipeline automatisé intégrant l'ingestion de nouvelles données, la continuité d'apprentissage (réentraînement) et l'inférence du modèle.
+    \item[$\bullet$] Déployer la solution sur AWS et évaluer ses performances techniques et financières (FinOps).
+\end{itemize}
+
+\section*{MÉTHODOLOGIE ET STRUCTURE DU MEMOIRE}
+Pour atteindre ces objectifs, nous avons suivi une approche méthodologique qui est la suivante :
+\begin{itemize}
+    \item[$\bullet$] Effectuer une revue de la littérature afin de comprendre l’existant, de définir les concepts du Cloud et du MLOps, et de mieux appréhender les contours de notre projet ;
+    \item[$\bullet$] Réaliser l'analyse des besoins fonctionnels et non fonctionnels pour définir le périmètre du système ;
+    \item[$\bullet$] Effectuer une modélisation théorique de l'architecture logique et de l'architecture physique de la solution ;
+    \item[$\bullet$] Implémenter la solution sur l'infrastructure AWS et élaborer un protocole d’expérimentation pour valider les résultats.
+\end{itemize}
+
+\vspace{1.5mm}
+Le mémoire sera structuré comme suit :
+\vspace{1.5mm}
+
+\begin{itemize}[label=\ding{42}, font=\large \color{darkgreen}]
+    \item \textbf{Chapitre 1 : Généralités et état de l'art} \\
+    Dans ce chapitre, nous présentons dans un premier temps des généralités structurées autour de deux axes : le MLOps (son importance, sa méthodologie, ses défis et son cycle de vie) et le Cloud Computing (ses fonctions et ses limites juridiques et sécuritaires). Dans un second temps, nous dressons un état de l'art comparatif des grandes plateformes Cloud et des architectures MLOps existantes. Pour finir, nous faisons un bilan afin de positionner notre démarche.
+    \vspace{2mm}
+    
+    \item \textbf{Chapitre 2 : Méthodologie} \\
+    Dans ce chapitre, nous présentons en détail la méthodologie adoptée pour la réalisation du projet. Nous exposons la méthodologie de développement, suivie d'une analyse approfondie du problème (besoins, acteurs, cas d'utilisation). Enfin, nous détaillons la conception de la solution à travers ses architectures logique et physique.
+    \vspace{2mm}
+
+    \item \textbf{Chapitre 3 : Implémentation et résultats} \\
+    Dans ce dernier chapitre, nous présentons l'environnement d'implémentation et le déploiement de l'infrastructure sur AWS. Nous discutons ensuite des résultats expérimentaux obtenus, en analysant les performances de l'architecture, sa capacité de passage à l'échelle et son optimisation des coûts.
+    \vspace{2mm}
+\end{itemize}
+
+Nous terminons par une conclusion générale, qui présente le bilan de ce travail, ses limites et des propositions de perspectives pour les recherches futures.

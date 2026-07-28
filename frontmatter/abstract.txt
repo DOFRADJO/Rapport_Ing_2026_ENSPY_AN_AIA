@@ -1,0 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ABSTRACT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Abstract}
+\addstarredchapter{Abstract}
+
+\initial{T}he industrialization of artificial intelligence models has become a major challenge for organizations seeking to deploy reliable and efficient AI solutions in production environments. Although models developed during the experimental phase generally achieve high performance, their scalability is often constrained by the increasing volume of data, computational resource requirements, and the need for automated processing pipelines. This thesis, carried out at \textbf{DESEMITS LLC}, focuses on the design of a Cloud-based MLOps architecture to support the scaling of a computer vision model used for crop anomaly detection. The main objective is to design a distributed infrastructure capable of efficiently processing large volumes of images while ensuring scalability, high availability, and cost optimization. The proposed solution relies on \textbf{Amazon Web Services (AWS)}, using Amazon S3 for distributed data storage, Amazon EMR for distributed computing, and Apache Spark (PySpark) for parallel image processing. This architecture separates storage and computing resources, improves the performance of the processing pipeline, and facilitates its integration into an MLOps workflow. Experimental results demonstrate that the proposed architecture effectively addresses scalability requirements by providing a modular, flexible, and scalable solution for large-scale data processing. It therefore establishes a solid foundation for the deployment and industrialization of computer vision models in a Cloud environment.
+
+\vspace{0.5cm}
+
+Keywords: \textbf{Artificial Intelligence, MLOps, Cloud Computing, Amazon Web Services, Amazon EMR, Amazon S3, Apache Spark, Distributed Computing, Computer Vision, Scalability.}
+
+\clearpage

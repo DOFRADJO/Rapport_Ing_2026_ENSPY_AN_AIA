@@ -1,0 +1,51 @@
+% ==========================================
+% ABRÉVIATIONS
+% ==========================================
+
+% ==============================================================================
+\chapter*{Liste des abréviations et sigles}
+\label{chap:abreviations}
+\addstarredchapter{Liste des abréviations et sigles}
+\markboth{Liste des abréviations et sigles}{}
+% ==============================================================================
+\adjustmtc
+
+\begin{itemize}
+    \item[$\bullet$] \textbf{ACP :} Analyse en Composantes Principales
+    \item[$\bullet$] \textbf{API :} Application Programming Interface (Interface de programmation d'application)
+    \item[$\bullet$] \textbf{AWS :} Amazon Web Services
+    \item[$\bullet$] \textbf{CACE :} Changing Anything Changes Everything (Modifier une chose modifie tout)
+    \item[$\bullet$] \textbf{CD :} Continuous Deployment / Delivery (Déploiement / Livraison continu)
+    \item[$\bullet$] \textbf{CI :} Continuous Integration (Intégration continue)
+    \item[$\bullet$] \textbf{CNN :} Convolutional Neural Network (Réseau de Neurones Convolutionnels)
+    \item[$\bullet$] \textbf{CPU :} Central Processing Unit (Unité centrale de traitement)
+    \item[$\bullet$] \textbf{CT :} Continuous Training (Entraînement continu)
+    \item[$\bullet$] \textbf{DevOps :} Development and Operations (Développement et Opérations)
+    \item[$\bullet$] \textbf{DL :} Deep Learning (Apprentissage profond)
+    \item[$\bullet$] \textbf{EC2 :} Elastic Compute Cloud
+    \item[$\bullet$] \textbf{EMR :} Elastic MapReduce
+    \item[$\bullet$] \textbf{FinOps :} Financial Operations (Gestion financière des ressources Cloud)
+    \item[$\bullet$] \textbf{GCP :} Google Cloud Platform
+    \item[$\bullet$] \textbf{GPU :} Graphics Processing Unit (Processeur graphique)
+    \item[$\bullet$] \textbf{HTTP :} Hypertext Transfer Protocol
+    \item[$\bullet$] \textbf{IA :} Intelligence Artificielle
+    \item[$\bullet$] \textbf{IaaS :} Infrastructure as a Service (Infrastructure en tant que service)
+    \item[$\bullet$] \textbf{IAM :} Identity and Access Management (Gestion des identités et des accès)
+    \item[$\bullet$] \textbf{JSON :} JavaScript Object Notation
+    \item[$\bullet$] \textbf{ML :} Machine Learning (Apprentissage automatique)
+    \item[$\bullet$] \textbf{MLOps :} Machine Learning Operations (Opérations d'apprentissage automatique)
+    \item[$\bullet$] \textbf{PaaS :} Platform as a Service (Plateforme en tant que service)
+    \item[$\bullet$] \textbf{PCA :} Principal Component Analysis (Équivalent anglais de l'ACP)
+    \item[$\bullet$] \textbf{PoC :} Proof of Concept (Preuve de concept / Expérimentation)
+    \item[$\bullet$] \textbf{RAM :} Random Access Memory (Mémoire vive)
+    \item[$\bullet$] \textbf{REST :} Representational State Transfer
+    \item[$\bullet$] \textbf{RGPD :} Règlement Général sur la Protection des Données
+    \item[$\bullet$] \textbf{S3 :} Simple Storage Service (Service de stockage d'Amazon)
+    \item[$\bullet$] \textbf{SaaS :} Software as a Service (Logiciel en tant que service)
+    \item[$\bullet$] \textbf{SLA :} Service Level Agreement (Accord de niveau de service)
+    \item[$\bullet$] \textbf{SLI :} Service Level Indicator (Indicateur de niveau de service)
+    \item[$\bullet$] \textbf{SLO :} Service Level Objective (Objectif de niveau de service)
+    \item[$\bullet$] \textbf{SRE :} Site Reliability Engineering (Ingénierie de la fiabilité des sites)
+    \item[$\bullet$] \textbf{UML :} Unified Modeling Language (Langage de modélisation unifié)
+    \item[$\bullet$] \textbf{VPC :} Virtual Private Cloud (Réseau privé virtuel)
+\end{itemize}

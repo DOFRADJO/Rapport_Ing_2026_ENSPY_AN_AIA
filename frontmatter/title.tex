@@ -1,0 +1,148 @@
+%
+% File: Title.tex
+% Author: V?ctor Bre?a-Medina
+% Description: Contains the title page
+%
+% UoB guidelines:
+% 
+% At the top of the title page, within the margins, the dissertation should give the title and, if 
+% necessary, sub-title and volume number. If the dissertation is in a language other than English, the 
+% title must be given in that language and in English. The full name of the author should be in the 
+% centre of the page. At the bottom centre should be the words ?A dissertation submitted to the 
+% University of Bristol in accordance with the requirements for award of the degree of ? in the 
+% Faculty of ...?, with the name of the school and month and year of submission. The word count of 
+% the dissertation (text only) should be entered at the bottom right-hand side of the page.
+%
+%
+%\hspace{5cm}
+%\pagecolor{fondpaille}%\afterpage{\nopagecolor}
+
+\begin{titlingpage}
+\begin{SingleSpace}
+
+\calccentering{\unitlength} 
+\begin{adjustwidth*}{\unitlength}{-\unitlength}
+\vspace*{13mm}
+\vspace{-4cm}
+\begin{center}
+ 	\begin{tabular}{ccc}
+				{\large UNIVERSIT\'{E} DE YAOUND\'{E} I} & \multirow{8}{*}{\includegraphics[ width =3cm , height =3cm]{logos/uy1.png}} & \large{UNIVERSITY OF YAOUNDE I}\\
+				%& & \\
+				\textbf{*******} &    & \textbf{*******} \\
+				%& & \\
+				\textcolor{darkgray}{\'{E}COLE NATIONALE SUP\'{E}RIEURE}& & \textcolor{darkgray}{NATIONAL ADVANCED SCHOOL}\\ 
+				\textcolor{darkgray}{POLYTECHNIQUE DE YAOUND\'{E}}	  & & \textcolor{darkgray}{OF ENGINEERING OF YAOUNDE} \\
+				%& & \\
+				\textbf{********}    & & \textbf{*******} \\
+				%& & \\
+				DEPARTEMENT DE GENIE& & DEPARTMENT OF COMPUTER \\ 
+				INFORMATIQUE & & ENGINEERING \\
+				\end{tabular}
+	
+\end{center}
+\hspace{3cm}
+\vspace{0.3cm}
+\begin{center}
+
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{1pt}}\\[-\baselineskip]
+\vspace{3.2pt}
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{2pt}}\\
+% \linespread{1.5}
+{
+\linespread{1.1}\selectfont
+{\fontsize{15pt}{17pt}\selectfont \textcolor{darkgray}{
+    \textsc{\textbf{Conception d'une architecture MLOps Cloud sur AWS}}
+}}\\
+}
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{1pt}}\\[-\baselineskip]
+\vspace{3.2pt}
+\textcolor{darkgray}{\rule[0.5ex]{\linewidth}{2pt}}\\
+\vspace{4mm}
+
+% \vspace{0.2cm}
+{\Large \textbf{Mémoire de fin d'études}}\\
+\vspace{0.4cm}
+
+{\normalsize \underline{ Présenté et soutenu par }} \\
+\vspace{2mm}
+{\large\textcolor{darkgray}{\textsc{\textbf{{ TAMBOU DJOMOU FRANCK DONALD }}}}\\
+\vspace{6mm}}
+
+{\normalsize \underline{\textbf{Matricule :}} 23P732} \\
+\vspace{6mm}
+
+{\normalsize \underline{ En vue de l’obtention du :}} \\
+\vspace{4mm}
+{\large\textcolor{darkgray}{\textsc{\textbf{{Diplôme d’Ingénieur de Conception en Arts Numériques Option : Arts et
+Intelligence Artificielle}}}}\\
+\vspace{6mm}}
+
+{\normalsize \underline{ Sous la supervision de : }}\\
+\vspace{4mm}
+{\normalsize \textbf{Pr. Thomas BOUETOU BOUETOU}, Professeur, UYI/ENSPY}\\
+\vspace{3mm}
+{\normalsize \textbf{Dr. Austin WAFFO}, Chargé de cours , UYI/ENSPY} \\
+\vspace{3mm}
+{\normalsize \textbf{Ing. Junior TEMGOUA }, CTO , DESEMITS LLC} \\
+\vspace{5mm}
+
+{\normalsize \underline{ Devant le jury composé de :}} \\
+\vspace{4.5mm}
+\begin{tabular}{>{\centering\arraybackslash}p{16cm}}
+{\large Président:} {\normalsize \textbf{Pr. X}, Maître de conférence, UYI/ENSPY} \\[3mm]
+
+{\large Examinateur:} {\normalsize \textbf{Dr. X}, Chargé de cours, UYI/ENSPY} \\[3mm]
+
+{\large Rapporteur 1 :} {\normalsize \textbf{Pr. Thomas BOUETOU BOUETOU}, Professeur, UYI/ENSPY} \\[3mm]
+
+{\large Rapporteur 2 :} {\normalsize \textbf{Dr. Austin WAFFO}, Chargé de cours , UYI/ENSPY} \\[3mm]
+
+{\large Invité:} {\normalsize \textbf{ Mme Fridoline MBIA }, RH , TECTRA} \\
+
+
+
+\end{tabular}\\
+\vspace{10mm}
+\begin{tabular}{c}
+{\large \textcolor{darkgray}{Année académique 2025-2026}}\\ \\
+% \vspace{4mm}
+{\large \textcolor{darkgray}{Mémoire soutenu en Juillet 2026}}
+\end{tabular}
+
+%Front page corner design...read ornaments documentation for more info
+%Peterson Yuhala
+\begin{tikzpicture}[remember picture, overlay, start chain, node distance=-2mm,color=darkgray]
+\node (nworn) [shift={(5mm,-5mm)}, anchor=north west, on chain ] at (current page.north west) {\pgfornament[width=10mm]{24}};
+\foreach \i in {1,...,17}
+\node [on chain] {\pgfornament[width=10mm]{19}};
+\node (neorn) [on chain] {\pgfornament[width=10mm]{24}};
+\foreach \i in {1,...,26}
+\node [continue chain=going below, on chain] {\pgfornament[width=10mm]{24}};
+\node (seorn) [on chain] {\pgfornament[width=10mm]{24}};
+\foreach \i in {1,...,17}
+\node [continue chain=going left, on chain] {\pgfornament[width=10mm]{24}};
+\node (sworn) [on chain] {\pgfornament[width=10mm]{24}};
+\foreach \i in {1,...,26}
+\node [continue chain=going above, on chain] {\pgfornament[width=10mm]{24}};
+\end{tikzpicture}
+% \begin{tikzpicture}[remember picture, overlay]
+%  \begin{scope}[shift={(current page.south west)},shift={(1,1)},scale=1]
+%  \shade[ball color=darkgray,opacity=.6] (0,0) circle (10ex);
+%  \shade[ball color=darkgray,opacity=.8] (1.7,1) circle (6ex);
+%  \shade[ball color=darkgray,opacity=.8] (1.5,3) circle (2ex);
+%  \shade[ball color=darkgray,opacity=.5] (-0.5,3) circle (1ex);
+%  \shade[ball color=darkgray,opacity=.8] (1,4) circle (1ex);
+%  \shade[ball color=darkgray,opacity=.6] (3.5,2.5) circle (2ex);
+%  \shade[ball color=darkgray,opacity=.8] (2.5,3.5) circle (2ex);
+%  \end{scope}
+%  \end{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\cornerplus{41}{88}
+\end{center}
+
+
+\end{adjustwidth*}
+
+\end{SingleSpace}
+\end{titlingpage}
