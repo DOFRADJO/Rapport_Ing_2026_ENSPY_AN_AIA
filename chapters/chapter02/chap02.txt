@@ -2,217 +2,496 @@
 \chapter{Généralités et état de l'art}
 \label{chap:generalites_etat_art}
 
-\textit{\initial{C}e chapitre s'articule autour de trois axes principaux : les généralités (sur le MLOps et le Cloud Computing) dans un premier temps, l'étude comparative des solutions existantes en matière de plateformes Cloud et d'architectures MLOps dans un second temps. Nous finissons par un bilan global afin de positionner nos choix technologiques pour la suite de ce mémoire.}
+\textit{\initial{C}e chapitre s'articule autour de trois axes principaux : les généralités (sur le MLOps et le Cloud Computing) dans un premier temps, puis l'exploration des architectures MLOps de référence déployées dans l'industrie dans un second temps. Nous finissons par un bilan global afin de positionner et de justifier nos choix technologiques pour la suite de ce mémoire.}
 
 \renewcommand{\mtctitle}{Sommaire}
 \minitoc
 \newpage
 
+
+
 % ==============================================================================
 \section{Généralités}
 % ==============================================================================
 
-Cette section pose le cadre conceptuel et théorique de notre étude. Elle s'articule autour de deux piliers technologiques fondamentaux pour l'industrialisation des systèmes intelligents : le MLOps (\textit{Machine Learning Operations}) et le Cloud Computing.
+Cette section pose le cadre conceptuel et théorique indispensable à notre étude. L'industrialisation d'un système intelligent ne repose pas uniquement sur la qualité de son algorithme, mais sur une méthodologie et une infrastructure capables de le soutenir à grande échelle. Cette partie s'articule autour de deux piliers technologiques fondamentaux : le \textbf{MLOps} (\textit{Machine Learning Operations}) et le \textbf{Cloud Computing}.
 
 \subsection{Le MLOps (Machine Learning Operations)}
 
-\subsubsection{Origines : Du DevOps au MLOps}
+\subsubsection{Du DevOps au MLOps : Définition et nécessité}
+Le MLOps tire ses origines des pratiques d'ingénierie logicielle traditionnelles, particulièrement du DevOps (\textit{Development and Operations}). Le DevOps a révolutionné la création de logiciels en fusionnant le développement et l'exploitation pour introduire l'Intégration Continue (CI) et la Livraison Continue (CD), garantissant des déploiements rapides et fiables \cite{85}. 
 
-Le MLOps tire directement ses origines des pratiques d'ingénierie logicielle traditionnelles, et plus particulièrement du DevOps (\textit{Development and Operations}). Historiquement, le DevOps a révolutionné la création de logiciels en fusionnant le développement et l'exploitation pour introduire l'Intégration Continue (CI) et le Déploiement Continu (CD) \cite{23}. Cependant, l'application stricte du DevOps aux systèmes d'intelligence artificielle s'est révélée insuffisante. En effet, contrairement aux logiciels traditionnels où le comportement est explicitement dicté par le code, les systèmes de Machine Learning (ML) apprennent et déduisent leur comportement à partir des données \cite{1, 35}.
+Cependant, l'application stricte du DevOps aux systèmes d'intelligence artificielle s'est révélée insuffisante. Contrairement aux logiciels traditionnels dont le comportement est dicté par des règles de code statiques, les systèmes d'apprentissage automatique déduisent leur comportement à partir des données \cite{85}. Le MLOps se définit donc comme une discipline d'ingénierie à l'intersection de l'apprentissage automatique, de l'ingénierie des données (\textit{Data Engineering}) et du DevOps \cite{85}. 
 
-Le DevOps classique se concentre uniquement sur le code source et les artefacts logiciels \cite{23}. Or, un projet de Machine Learning implique une complexité supplémentaire : il repose sur trois dimensions interdépendantes que sont le code, les données d'entraînement et les paramètres du modèle \cite{23, 35}. Face à ce constat, l'industrie a fait évoluer le DevOps pour créer une nouvelle discipline sur mesure : le MLOps.
+La différence fondamentale réside dans l'évolution du système en production. Le DevOps automatise le cycle de vie d'un seul artefact (le code), tandis que le MLOps doit gérer un cycle complexe impliquant trois artefacts interdépendants : le code, les données et le modèle \cite{74, 85}. Lorsqu'un modèle est confronté aux données changeantes du monde réel, ses performances se dégradent inévitablement. Le MLOps introduit ainsi une nouvelle pratique : l'\textbf{Entraînement Continu} (\textit{Continuous Training} - CT), permettant de réentraîner le modèle pour qu'il reste pertinent au fil du temps \cite{74, 84}.
 
-\subsubsection{Définition et différences fondamentales}
+\subsubsection{Les défis de l'IA et la « dette technique cachée »}
+Développer un modèle prédictif performant en laboratoire est aujourd'hui rapide et peu coûteux, mais son maintien en production est complexe. Comme le soulignent Sculley \textit{et al.} dans leurs travaux fondateurs chez Google, le code spécifique à l'apprentissage automatique ne représente qu'une infime fraction d'un système IA en exploitation \cite{82}. L'essentiel du système est constitué d'une vaste infrastructure (souvent appelée « code de liaison » ou \textit{glue code}) dédiée à la collecte des données, à la vérification, et à la gestion des ressources \cite{82}.
 
-Le MLOps (\textit{Machine Learning Operations}) se définit comme une discipline d'ingénierie à l'intersection de l'apprentissage automatique, de l'ingénierie des données (\textit{Data Engineering}) et des pratiques DevOps \cite{1, 39}. Son objectif est de standardiser et d'automatiser le cycle de vie complet des modèles d'IA afin de permettre leur déploiement en production de manière fiable et évolutive \cite{1, 39}.
-
-La différence fondamentale entre le DevOps et le MLOps réside dans la nature des artefacts générés et dans la nécessité d'adaptation continue. Lorsqu'un modèle ML est déployé, il commence à formuler des prédictions sur des données du monde réel. Si ces données évoluent, le modèle se dégrade. Par conséquent, le MLOps ajoute une pratique inexistante dans le DevOps classique : l'\textbf{Entraînement Continu} (\textit{Continuous Training} - CT) \cite{23, 35}. Le CT permet de réentraîner automatiquement le modèle avec de nouvelles données fraîchement collectées, garantissant ainsi qu'il reste précis et pertinent au fil du temps \cite{1, 23}.
-
-\subsubsection{Défis et dette technique cachée}
-
-La mise en production de systèmes ML sans cadre MLOps rigoureux génère ce que la littérature appelle la « dette technique cachée » (\textit{Hidden Technical Debt}) \cite{1, 39}. Les principaux défis techniques auxquels le MLOps doit répondre sont :
-
+L'absence d'une architecture MLOps rigoureuse conduit à l'accumulation d'une \textbf{« dette technique cachée »} (\textit{Hidden Technical Debt}) \cite{82}. Les systèmes ML sont vulnérables à des défis systémiques uniques :
 \begin{itemize}
-    \item[$\bullet$] \textbf{La dépendance aux données (\textit{Data Dependencies}) :} Contrairement au code qui est statique, les données sont vivantes. Le système est vulnérable à la « dérive des données » (\textit{Data Drift}), qui survient lorsque la distribution statistique des données en production s'éloigne de celle des données d'entraînement, rendant le modèle obsolète \cite{1}.
-    \item[$\bullet$] \textbf{L'enchevêtrement (\textit{Entanglement}) :} Ce défi est régi par le principe CACE (\textit{Changing Anything Changes Everything}). Dans un système ML, la modification d'un seul composant (comme l'ajout d'une caractéristique ou la modification d'un hyperparamètre) affecte inévitablement toutes les autres parties du modèle \cite{1, 39}.
-    \item[$\bullet$] \textbf{La reproductibilité :} Reproduire un résultat d'expérimentation nécessite de tracer la version exacte du code, la version précise du jeu de données utilisé et les paramètres spécifiques du modèle, ce qui exige des registres spécialisés (\textit{Model Registries}) \cite{23}.
+    \item[$\bullet$] \textbf{L'enchevêtrement (Principe CACE) :} Dans un modèle ML, les signaux d'entrée ne sont jamais réellement indépendants. Le principe CACE (\textit{Changing Anything Changes Everything}) stipule que la modification d'un seul hyperparamètre, ou l'ajout d'une seule caractéristique, modifie les poids de toutes les autres et altère le comportement de tout le système \cite{82}.
+    \item[$\bullet$] \textbf{Les dépendances de données instables :} Pour fonctionner, le modèle consomme des signaux d'entrée. Si la distribution statistique de ces données change silencieusement dans le monde réel (un phénomène appelé dérive des données ou \textit{Data Drift}), les prédictions se dégradent sans qu'aucune erreur logicielle ne soit déclenchée \cite{82}.
+    \item[$\bullet$] \textbf{Les boucles de rétroaction cachées :} Un modèle déployé finit souvent par influencer les futures données qu'il va ingérer (par exemple, un système de recommandation qui modifie le comportement de clic des utilisateurs), créant des boucles de rétroaction extrêmement complexes à diagnostiquer \cite{82}.
 \end{itemize}
 
-\subsubsection{Méthodologie et Cycle de vie du MLOps}
+\subsubsection{Principes fondamentaux et cycle de vie MLOps}
+Pour rembourser cette dette technique et automatiser le déploiement, l'architecture MLOps s'appuie sur des modèles de conception (\textit{design patterns}) rigoureux. Selon la littérature scientifique \cite{85} et les standards de l'industrie (CD4ML) \cite{84}, un système MLOps complet repose sur les principes suivants :
+\begin{itemize}
+    \item[$\bullet$] \textbf{L'orchestration des flux de travail (Pipelines) :} Les tâches complexes (ingestion des données, ingénierie des caractéristiques, entraînement du modèle) sont coordonnées par des graphes orientés acycliques (DAG). Cette automatisation garantit que chaque étape est exécutée dans le bon ordre de manière répétable \cite{84, 85}.
+    \item[$\bullet$] \textbf{Le versionnage unifié et la Reproductibilité :} Pour garantir une reproductibilité totale, le MLOps exige le versionnage simultané du code source (via Git), des jeux de données (\textit{Data Versioning}) et des modèles. L'objectif est de pouvoir retracer exactement quels paramètres et quelles données ont généré une prédiction spécifique, une exigence non négociable en production \cite{74, 85}.
+    \item[$\bullet$] \textbf{Le Registre de Modèles (\textit{Model Registry}) :} Une fois entraîné et validé, le modèle est stocké dans un registre centralisé avec ses métadonnées et son lignage (\textit{lineage}), prêt à être déployé \cite{84, 85}.
+    \item[$\bullet$] \textbf{La Supervision en continu et les Boucles de rétroaction :} Le système intègre des outils d'observabilité pour surveiller la latence, la précision des prédictions et la dérive des données. Cette supervision alimente une boucle de rétroaction (\textit{Feedback Loop}) qui déclenche automatiquement les pipelines de réentraînement (CT) dès que les performances chutent sous un seuil acceptable \cite{84, 85}.
+\end{itemize}
 
-Pour relever ces défis, le MLOps structure l'ingénierie autour d'un cycle de vie itératif, automatisé et continu \cite{1, 23}. Ce cycle se décompose en plusieurs phases clés :
 
-\begin{enumerate}
-    \item[$\bullet$] \textbf{Gestion des données (\textit{Data Management}) :} Collecte, validation, versionnage et ingénierie des caractéristiques (\textit{Feature Engineering}). Cette phase garantit que les données fournies au modèle sont fiables et traçables \cite{1, 23}.
-    \item[$\bullet$] \textbf{Développement et entraînement (\textit{Model Development}) :} Expérimentation itérative, optimisation des hyperparamètres et entraînement du modèle. Le code et les artefacts sont rigoureusement versionnés dans un registre \cite{1, 23}.
-    \item[$\bullet$] \textbf{Évaluation et Validation (\textit{Model Evaluation}) :} Validation hors ligne des performances du modèle à l'aide de métriques établies, intégrée dans le pipeline d'intégration continue (CI) avant tout déploiement \cite{1}.
-    \item[$\bullet$] \textbf{Déploiement (\textit{Deployment}) :} Mise à disposition du modèle dans l'environnement de production via des pipelines de livraison continue (CD) pour réaliser des inférences \cite{1, 23}.
-    \item[$\bullet$] \textbf{Supervision et Apprentissage Continu (\textit{Monitoring \& Continuous Training}) :} Suivi en temps réel des performances techniques et de la dérive des données. Dès qu'une baisse de performance est détectée, la boucle de rétroaction automatisée (CT) est déclenchée pour réentraîner le modèle avec des données fraîches \cite{1, 23, 35}.
-\end{enumerate}
+\subsection{Le Cloud Computing : Catalyseur de l'IA à grande échelle}
+
+\subsubsection{Fondements et élasticité (Découplage Stockage/Calcul)}
+Le \textit{Cloud Computing} (informatique en nuage) désigne la fourniture à la demande de ressources informatiques (puissance de calcul, stockage, bases de données, réseaux) via Internet, avec une tarification basée sur la consommation réelle (modèle \textit{Pay-As-You-Go}). Dans le contexte de l'Intelligence Artificielle, l'industrie s'est massivement tournée vers le Cloud pour surmonter les limitations des infrastructures locales (\textit{On-Premise}), qui s'avèrent souvent trop rigides et coûteuses face aux besoins exponentiels en calcul imposés par le traitement de données massives (Big Data) \cite{60}.
+
+L'avantage architectural majeur du Cloud pour le MLOps est de permettre le découplage physique entre le stockage des données et la puissance de calcul \cite{76}. Cette approche garantit une élasticité totale : les grappes de serveurs (clusters) peuvent être provisionnées dynamiquement lors de l'entraînement des modèles ou du prétraitement des données, puis détruites immédiatement après, optimisant ainsi l'allocation des ressources \cite{43}.
+
+\subsubsection{Modèles de services Cloud appliqués au MLOps}
+La force du Cloud Computing réside dans ses différents niveaux d'abstraction, permettant de structurer l'environnement technique selon les besoins spécifiques des équipes \cite{60} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{IaaS (Infrastructure as a Service) :} Fournit les briques matérielles fondamentales virtualisées (serveurs, réseaux, disques). Pour le MLOps, l'IaaS permet aux ingénieurs de construire des architectures de calcul distribué sur-mesure, disposant de processeurs spécifiques (CPU, GPU, RAM) pour accélérer l'entraînement des réseaux de neurones complexes \cite{60, 87}.
+    \item[$\bullet$] \textbf{PaaS (Platform as a Service) :} Offre des environnements de développement et de déploiement entièrement managés. C'est le modèle privilégié pour l'industrialisation de l'IA, car il élimine la gestion fastidieuse des serveurs sous-jacents. Il fournit des espaces de travail prêts à l'emploi (\textit{workspaces}) et des services d'orchestration de conteneurs (ex: Kubernetes) ou de calcul distribué (ex: Apache Spark sur Amazon EMR) \cite{35, 60}.
+    \item[$\bullet$] \textbf{SaaS (Software as a Service) :} Propose des applications logicielles complètes accessibles directement via une interface web ou une API. Dans le cadre de l'IA, cela inclut des modèles pré-entraînés prêts à être interrogés sans aucune gestion de l'infrastructure \cite{60}.
+\end{itemize}
+
+\subsubsection{Défis sécuritaires et souveraineté des données}
+Malgré sa flexibilité, l'externalisation des données d'entreprise et des modèles d'IA sur des serveurs distants soulève des défis critiques en matière de sécurité, de confidentialité et de conformité réglementaire \cite{43, 80} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Souveraineté et Conformité (RGPD) :} Le Règlement Général sur la Protection des Données (RGPD) impose en Europe un cadre très strict sur la collecte et le stockage des données. Les architectes doivent s'assurer que les données sensibles sont hébergées dans des régions Cloud physiquement situées sur le territoire européen, garantissant ainsi la souveraineté numérique du système \cite{81}.
+    \item[$\bullet$] \textbf{Isolation réseau et gestion des identités (IAM) :} L'architecture Cloud doit impérativement intégrer des mécanismes de chiffrement robustes (au repos et en transit). De plus, l'utilisation de Réseaux Privés Virtuels (\textit{VPC - Virtual Private Cloud}) et la mise en place de politiques de gestion des identités et des accès (\textit{IAM - Identity and Access Management}) appliquant le principe du "moindre privilège" sont indispensables pour sécuriser les environnements et empêcher toute fuite de données \cite{83}.
+\end{itemize}
+
+\subsubsection{L'optimisation des coûts : L'approche FinOps}
+Le passage à l'échelle dans le Cloud introduit un risque d'explosion des coûts si les ressources ne sont pas gérées avec rigueur. Le FinOps (\textit{Financial Operations}) est une pratique de gestion financière des ressources Cloud visant à maximiser la valeur métier. Dans le cadre du MLOps, cela se traduit par l'automatisation de la destruction des ressources inactives (clusters éphémères) et par l'exploitation d'instances de calcul à prix réduit (telles que les instances "Spot", qui exploitent la capacité excédentaire des fournisseurs Cloud) pour les charges de travail distribuées et tolérantes aux pannes \cite{43, 76}.
+
 
 \subsubsection{Fiabilité et supervision : Approche SRE (SLA, SLO, SLI)}
-L'industrialisation des modèles d'intelligence artificielle requiert l'adoption des pratiques d'ingénierie de la fiabilité des sites (Site Reliability Engineering - SRE) afin de superviser le comportement des algorithmes de la phase de développement jusqu'à leur déploiement en production \cite{32}. Pour garantir qu'un système MLOps répond aux exigences commerciales, l'industrie s'appuie sur trois métriques contractuelles et opérationnelles fondamentales :
+L'industrialisation des modèles d'intelligence artificielle requiert l'adoption de pratiques d'ingénierie de la fiabilité rigoureuses (souvent inspirées du \textit{Site Reliability Engineering} - SRE) pour éviter l'accumulation d'une « dette technique cachée » (\textit{Hidden Technical Debt}) en production \cite{82}. Pour garantir qu'un système MLOps répond aux exigences de fiabilité, l'industrie s'appuie sur trois concepts opérationnels fondamentaux :
 
 \begin{itemize}
-    \item[$\bullet$] \textbf{SLA (Service Level Agreement - Accord de niveau de service) :} Il s'agit du contrat métier établi avec le client ou les parties prenantes, promettant un niveau de performance global du système (par exemple, 99,9\% de disponibilité de l'API de prédiction ou un temps de réponse garanti). L'architecture doit être alignée sur ces SLA, notamment pour justifier les choix de conception liés à la tolérance aux pannes et à la durabilité \cite{43}.
-    \item[$\bullet$] \textbf{SLO (Service Level Objective - Objectif de niveau de service) :} Il s'agit de l'objectif interne, fixé par les ingénieurs Cloud et MLOps, qui doit être atteint pour garantir le respect du SLA. Un SLO sera généralement plus strict que le SLA (ex: viser 99,95\% de disponibilité en interne pour s'assurer de ne jamais rompre le contrat de 99,9\%).
-    \item[$\bullet$] \textbf{SLI (Service Level Indicator - Indicateur de niveau de service) :} Il s'agit de la métrique réelle et mesurable en temps réel pour évaluer le système. Dans un contexte MLOps classique, les SLI incluent la latence d'inférence, le taux d'erreur serveur et l'utilisation CPU/RAM. Toutefois, l'IA introduit des SLI spécifiques : le taux de dérive des données (\textit{Data Drift}), la dégradation de la précision du modèle (\textit{Accuracy}), et les taux de faux positifs/négatifs \cite{32, 41}.
+    \item[$\bullet$] \textbf{SLA (Service Level Agreement - Accord de niveau de service) :} Il s'agit du contrat établi avec les consommateurs du modèle, définissant les attentes globales de performance (disponibilité, temps de réponse, etc.). Dans un système ML, l'établissement de SLA stricts est par exemple essentiel pour protéger le modèle contre des « consommateurs non déclarés » (\textit{undeclared consumers}) qui pourraient le surcharger et compromettre la stabilité du système \cite{82}. L'architecture Cloud dans son ensemble doit être alignée sur ces SLA \cite{43}.
+    \item[$\bullet$] \textbf{SLO (Service Level Objective - Objectif de niveau de service) :} Il s'agit de l'objectif interne de performance. Les processus d'alimentation en données (en amont) et le système ML lui-même doivent être testés et supervisés en continu pour atteindre les objectifs de niveau de service (SLO) fixés. Toute défaillance du modèle à respecter ces SLO doit être immédiatement propagée vers les systèmes dépendants en aval \cite{82}.
+    \item[$\bullet$] \textbf{SLI (Service Level Indicator - Indicateur de niveau de service) :} C'est la métrique réelle et mesurable. Au-delà des SLI classiques de l'ingénierie logicielle (latence d'inférence, utilisation CPU/RAM), les systèmes d'IA introduisent des indicateurs très spécifiques : la dégradation de la précision algorithmique et le taux de dérive des données (\textit{Data Drift}) \cite{43, 74}.
 \end{itemize}
 
-Le non-respect d'un SLO (mesuré par une chute critique d'un SLI) agit comme un déclencheur automatisé au sein du pipeline MLOps, ordonnant par exemple le réentraînement immédiat du modèle avec de nouvelles données fraîchement collectées \cite{41, 43}.
+En production, le non-respect d'un SLO (mesuré par la chute critique d'un SLI, comme l'apparition d'une dérive de données) agit comme un déclencheur automatisé. Le pipeline MLOps doit être instrumenté pour détecter cette dégradation et ordonner l'exécution d'un cadre de réentraînement automatisé (\textit{automated re-training framework}) avec de nouvelles données fraîchement collectées \cite{43, 74}. À titre d'exemple pratique, une architecture MLOps robuste peut être configurée pour déclencher automatiquement un réentraînement dès lors qu'un indicateur de dérive statistique dépasse un seuil de tolérance prédéfini (ex: statistique KS $> 0.20$) \cite{80}.
 
-
-\subsection{Le Cloud Computing}
-
-\subsubsection{Définition et fondements}
-Le \textit{Cloud Computing} (informatique en nuage) désigne la fourniture à la demande de ressources informatiques (puissance de calcul, stockage, bases de données, réseaux) via Internet, avec une tarification basée sur la consommation réelle (système \textit{Pay-As-You-Go}). Dans le contexte de l'Intelligence Artificielle, l'industrie s'est massivement tournée vers le Cloud pour surmonter les limitations des infrastructures locales (\textit{On-Premise}), qui s'avèrent souvent trop rigides et coûteuses face aux besoins exponentiels en calcul imposés par le traitement de données massives \cite{23, 60}.
-
-Le Cloud permet de découpler physiquement le stockage des données de la puissance de calcul. Cette architecture garantit une élasticité totale : les clusters de serveurs peuvent être provisionnés dynamiquement lors de l'entraînement ou de l'inférence d'un modèle, puis détruits immédiatement après, optimisant ainsi drastiquement les coûts opérationnels (approche FinOps) \cite{23, 35}.
-
-\subsubsection{Modèles de services appliqués au MLOps}
-La force du Cloud Computing réside dans ses différents niveaux d'abstraction, qui permettent de structurer l'environnement de travail des équipes métiers et techniques \cite{35, 60} :
-\begin{itemize}
-    \item[$\bullet$] \textbf{IaaS (Infrastructure as a Service) :} Fournit les briques matérielles fondamentales virtualisées (serveurs, réseaux, disques). Pour le MLOps, l'IaaS permet aux ingénieurs de construire des architectures de calcul distribué sur-mesure (ex: instances Amazon EC2), offrant un contrôle total mais exigeant une administration système complexe \cite{60}.
-    \item[$\bullet$] \textbf{PaaS (Platform as a Service) :} Offre des environnements de développement et de déploiement entièrement managés. C'est le modèle privilégié pour l'industrialisation de l'IA, car il élimine la gestion fastidieuse des serveurs sous-jacents. Il fournit des espaces de travail (\textit{workspaces}) prêts à l'emploi favorisant la collaboration entre développeurs et opérateurs métiers, en incluant des services d'orchestration et de calcul Big Data (ex: Amazon EMR pour Apache Spark) \cite{35, 60}.
-    \item[$\bullet$] \textbf{SaaS (Software as a Service) :} Propose des applications logicielles complètes accessibles directement par les utilisateurs finaux via un navigateur. Dans le cadre de l'IA, cela inclut les interfaces de modèles pré-entraînés prêtes à être interrogées \cite{35}.
-\end{itemize}
-
-\subsubsection{Défis sécuritaires et limites juridiques}
-Malgré sa flexibilité, l'externalisation des données d'entreprise et des modèles d'IA sur des serveurs distants soulève des défis critiques en matière de sécurité, de confidentialité et de conformité réglementaire \cite{8, 14}.
+\subsubsection{Défis sécuritaires, conformité et protection des données}
+Malgré sa flexibilité, l'externalisation des données d'entreprise et des modèles d'IA sur des serveurs distants soulève des défis critiques en matière de sécurité, de confidentialité (protection des données personnelles et sensibles) et de conformité réglementaire \cite{43}. Pour concevoir un système MLOps de qualité production, l'architecture doit impérativement intégrer des mécanismes de protection à plusieurs niveaux :
 
 \begin{itemize}
-    \item[$\bullet$] \textbf{Souveraineté et RGPD :} Le Règlement Général sur la Protection des Données (RGPD) impose en Europe un cadre très strict sur la collecte, le traitement et le stockage des données personnelles \cite{14}. Pour concevoir une architecture conforme, les ingénieurs doivent s'assurer que les données sensibles sont physiquement hébergées dans des régions Cloud situées sur le territoire européen, garantissant ainsi la souveraineté numérique du système \cite{23}.
-    \item[$\bullet$]\textbf{Le Cloud Act et la protection des données :} Le \textit{CLOUD Act} (Clarifying Lawful Overseas Use of Data Act) est une loi fédérale américaine qui permet aux autorités des États-Unis de contraindre les fournisseurs Cloud américains (tels qu'AWS, Azure ou GCP) à fournir les données stockées sur leurs serveurs, quelle que soit leur localisation géographique. Face à cette législation extraterritoriale, l'architecture Cloud doit impérativement intégrer des mécanismes de chiffrement robustes (\textit{Encryption at rest} et \textit{in transit}), ainsi que des politiques de gestion des identités et des accès (IAM) appliquant rigoureusement le principe du moindre privilège afin de cloisonner les environnements \cite{8, 23}.
+    \item[$\bullet$] \textbf{Souveraineté, résidence des données et conformité (ex : RGPD) :} Les cadres réglementaires (comme le RGPD en Europe) imposent des contrôles stricts sur la collecte, le traitement et le stockage des données. L'architecture doit intégrer dès sa conception la validation des permissions et de la confidentialité \cite{43}. Pour s'y conformer, les ingénieurs doivent s'assurer que les données sensibles sont physiquement hébergées dans des régions Cloud spécifiques (ou via des solutions périphériques comme \textit{AWS Local Zones}) afin de garantir la souveraineté numérique et de respecter les exigences strictes de résidence des données (\textit{Data Residency}) inhérentes aux charges de travail réglementées \cite{43}.
+    \item[$\bullet$]\textbf{Chiffrement et gestion des accès (IAM) :} Face aux législations extraterritoriales (telles que le \textit{CLOUD Act} américain) et aux menaces de cybersécurité, l'infrastructure doit nativement intégrer des mécanismes de chiffrement robustes pour les données au repos et en transit (\textit{Encryption at rest and in transit}) afin d'en assurer l'obfuscation \cite{43}. De plus, la sécurisation des environnements exige la mise en place de politiques de Gestion des Identités et des Accès (IAM) appliquant rigoureusement le « principe du moindre privilège » (\textit{Least privilege access}). Cela permet de cloisonner hermétiquement les réseaux, d'isoler les rôles d'exécution et de prévenir tout accès non autorisé aux environnements d'entraînement et d'inférence \cite{17, 43}.
 \end{itemize}
 
 % ==============================================================================
 \section{État de l'art}
 % ==============================================================================
 
-L'industrialisation des modèles d'intelligence artificielle à grande échelle nécessite des infrastructures logicielles et matérielles robustes. Un véritable état de l'art implique d'analyser en profondeur la manière dont les leaders de l'industrie conçoivent ces architectures, d'étudier les composants spécifiques proposés par les fournisseurs Cloud (AWS, Azure, GCP), et de comparer leurs performances techniques.
+Un véritable état de l'art implique d'analyser en profondeur la manière dont les leaders de l'industrie conçoivent et déploient leurs infrastructures pour passer à l'échelle.
 
-\subsection{Distinction entre Plateforme MLOps et Architecture MLOps}
-Avant d'étudier les différentes solutions du marché, il est primordial en ingénierie de faire la distinction conceptuelle entre une plateforme MLOps et une architecture MLOps.
+Comme le soulignent Sculley et al. dans leurs travaux de recherche fondateurs, le code algorithmique ne représente qu'une infime fraction d'un système IA ; le reste est constitué d'une vaste infrastructure complexe de collecte, de vérification des données et de supervision \cite{82}. L'absence d'une architecture rigoureuse conduit inévitablement à l'accumulation d'une « dette technique cachée », freinant l'innovation et exposant les entreprises à des risques critiques \cite{82}. 
 
-Une \textbf{Plateforme MLOps} est un produit logiciel ou une solution "de bout en bout", souvent managée par un fournisseur Cloud (comme Amazon SageMaker, Google Vertex AI) ou Open Source (comme MLflow, ClearML) \cite{23, 42}. Ces plateformes ont pour vocation de réduire la complexité d'intégration en regroupant au sein d'un même environnement de multiples fonctionnalités : gestion des données, registre de modèles, déploiement et supervision \cite{42}. Si elles accélèrent la mise sur le marché, elles limitent parfois la flexibilité technique des équipes et peuvent induire une forte dépendance technologique (\textit{vendor lock-in}) ainsi que des coûts élevés \cite{23}.
+C'est pour surmonter cet obstacle que le paradigme du MLOps (\textit{Machine Learning Operations}) s'est imposé, fusionnant l'ingénierie logicielle (DevOps), l'ingénierie des données (\textit{Data Engineering}) et l'apprentissage automatique \cite{85}. Toutefois, concevoir un système MLOps capable de traiter des volumes massifs de données exige de s'appuyer sur des modèles de conception (\textit{design patterns}) durables \cite{43}.
 
-À l'inverse, une \textbf{Architecture MLOps} ne se résume pas à un outil ou à un diagramme unique. Il s'agit d'une conception structurelle globale, agnostique sur le plan technologique, qui orchestre plusieurs services et microservices pour répondre à un besoin précis de passage à l'échelle \cite{41}. L'architecture repose sur des modèles de conception (\textit{design patterns}) durables, tels que la modularité, le découplage strict entre les capacités de stockage (Data Lake) et de calcul distribué (clusters), ainsi que l'établissement de contrats clairs entre chaque étape du pipeline \cite{41}. 
-
-Une architecture MLOps robuste (fondation) peut ainsi s'appuyer sur plusieurs plateformes et outils open source interchangeables, permettant de concevoir des systèmes de production évolutifs, isolés des pannes et économiquement optimisés \cite{23, 41}.
-
-
-\subsection{Architectures MLOps de référence dans l'industrie}
-
-Historiquement, les systèmes d'apprentissage automatique étaient déployés sous forme d'applications monolithiques. Face à l'augmentation massive des volumes de données et à la complexité des modèles, cette approche s'est révélée inefficace (saturation des ressources, difficulté de mise à jour, temps de traitement critiques). Pour résoudre ce problème, des pionniers technologiques ont repensé l'ingénierie ML en s'appuyant sur des architectures orientées microservices et conteneurisées \cite{35, 46}.
-
-L'étude des plateformes internes développées par ces géants de la technologie permet de dégager des modèles d'architecture (\textit{design patterns}) de référence. Nous détaillons ci-dessous quatre architectures industrielles majeures, en analysant leurs composants spécifiques :
-
-\subsubsection{Michelangelo (Uber)}
-Développée pour gérer des milliers de modèles en production (allant de la prédiction des temps d'arrivée à la détection de fraudes), la plateforme Michelangelo d'Uber a été l'une des premières à standardiser le flux de travail MLOps. Elle divise le cycle de vie du Machine Learning en plusieurs microservices hautement spécialisés \cite{46} :
+Cette section propose donc une exploration structurée de ces standards technologiques :
 \begin{itemize}
-    \item[$\bullet$] \textbf{Gestion des données et Feature Store :} Sépare strictement les pipelines de données et utilise un \textit{Feature Store} centralisé pour partager les caractéristiques calculées entre les équipes, garantissant l'absence de divergence entre la phase d'entraînement et la phase d'inférence.
-    \item[$\bullet$] \textbf{Entraînement distribué :} S'appuie sur des clusters pour paralléliser l'apprentissage des modèles sur de très grands ensembles de données, de manière totalement isolée du reste du système.
-    \item[$\bullet$] \textbf{Déploiement et inférence :} Les modèles sont packagés dans des conteneurs indépendants, permettant de supporter simultanément des pipelines hors ligne (traitement par lots) et en ligne (temps réel). Des API spécifiques sont fournies pour l'inférence et les tests A/B sans interruption de service \cite{46}.
-\end{itemize}
-
-\subsubsection{Système de Recommandation (Netflix)}
-Le système de personnalisation de Netflix repose sur une architecture en microservices extrêmement résiliente, conçue pour traiter les interactions de millions d'utilisateurs en temps réel. L'architecture matérielle et logicielle se découple en trois couches temporelles distinctes \cite{46} :
-\begin{itemize}
-    \item[$\bullet$] \textbf{La couche hors ligne (Offline Layer) :} S'appuie sur des systèmes de stockage massifs (Hadoop, Hive) pour collecter et nettoyer les données, et pour entraîner les modèles lourds de recommandation sans contrainte de temps strict.
-    \item[$\bullet$] \textbf{La couche "Nearline" :} Agit comme un pont événementiel (utilisant des bus de messages comme Apache Kafka ou RabbitMQ). Elle réagit aux actions récentes de l'utilisateur pour recalculer dynamiquement les scores de recommandation sans avoir à réentraîner le modèle complet \cite{46}.
-    \item[$\bullet$] \textbf{La couche en ligne (Online Layer) :} Exposée via une passerelle d'API (API Gateway), cette couche sert les prédictions en temps réel. Elle intègre des outils de maillage de services (\textit{Service Mesh} comme Istio) pour équilibrer les charges et assurer une récupération instantanée en cas de panne d'un composant \cite{46}.
-\end{itemize}
-
-\subsubsection{TensorFlow Extended - TFX (Google)}
-Introduite par Google pour soutenir ses propres initiatives axées sur l'intelligence artificielle, TFX est une plateforme d'architecture MLOps conçue pour orchestrer des pipelines traitant des exaoctets de données. Elle décompose le flux de travail en microservices intégrés et standardisés \cite{35, 46} :
-\begin{itemize}
-    \item[$\bullet$] \textbf{Ingestion et Validation (TFX Data Validation) :} Microservices chargés d'ingérer les données et de détecter automatiquement les anomalies ou les changements de distribution statistique (\textit{Data Drift}) avant même le début de l'entraînement.
-    \item[$\bullet$] \textbf{Transformation (TFX Transform) :} Assure un prétraitement distribué des données. La logique de transformation est exportée sous forme de graphe, réutilisable tel quel lors de l'inférence.
-    \item[$\bullet$] \textbf{Orchestration et Déploiement :} Les pipelines sont orchestrés à l'aide d'Apache Beam et de Kubernetes, permettant d'automatiser l'évaluation des modèles et leur mise à disposition évolutive via TensorFlow Serving \cite{35, 46}.
-\end{itemize}
-
-\subsubsection{Plateforme MLOps centralisée (H\&M)}
-Pour soutenir ses opérations mondiales de vente au détail (prévision de la demande, optimisation des stocks, recommandations client), H\&M a développé une architecture Cloud native unifiée, illustrant parfaitement l'industrialisation du ML dans un contexte d'entreprise non purement technologique \cite{23} :
-\begin{itemize}
-    \item[$\bullet$] \textbf{Registre et Gestion du cycle de vie :} La plateforme utilise MLflow comme registre de modèles et outil de suivi des expérimentations, offrant une gouvernance centralisée à de multiples équipes de science des données \cite{23}.
-    \item[$\bullet$] \textbf{Inférence conteneurisée :} Elle s'appuie sur le framework open source Seldon Core, déployé nativement sur des clusters Kubernetes, pour transformer les modèles en microservices de production isolés et robustes.
-    \item[$\bullet$] \textbf{Automatisation de l'infrastructure (CI/CD) :} L'architecture est entièrement pilotée par des pratiques DevOps (notamment l'Infrastructure as Code avec Terraform), permettant de provisionner automatiquement les serveurs et de déployer les modèles de la phase de test à la production sans intervention manuelle lourde \cite{23}.
+    \item[$\bullet$] Nous disséquerons les architectures de référence déployées sur le Cloud par cinq grandes organisations (Netflix, Capital One, Riot Games, Expedia Group, ainsi qu'un modèle standard basé sur l'Infrastructure as Code).
+    \item[$\bullet$] Enfin, cette démarche analytique nous permettra de dresser un bilan objectif pour introduire et justifier l'architecture hybride retenue pour le compte de DESEMITS LLC.
 \end{itemize}
 
 \vspace{0.5cm}
-\textbf{Synthèse des approches} \\
-Ces retours d'expérience industriels démontrent que le passage à l'échelle d'un système ML nécessite inévitablement une décomposition en services modulaires. La séparation stricte entre le stockage des données, l'ingénierie des caractéristiques, le registre des modèles et l'infrastructure d'inférence est aujourd'hui la norme pour garantir la flexibilité, la tolérance aux pannes et l'évolutivité des systèmes intelligents \cite{35, 46}.
 
-\subsection{Étude approfondie des écosystèmes Cloud pour le MLOps}
-Pour reproduire ces architectures modulaires sans avoir à gérer des centres de données physiques, l'industrie s'appuie sur des fournisseurs Cloud publics. Bien que chaque fournisseur propose sa propre sémantique, une architecture MLOps Cloud de bout en bout se compose invariablement de quatre couches : le domaine des données (\textit{Data Estate}), l'environnement d'entraînement, le registre de modèles et la couche de service (\textit{Serving Layer}) \cite{41}.
+\subsection{Cas d'étude 1 : Netflix -- Architecture MLOps de référence, orchestration hybride et passage à l'échelle}
 
-\subsubsection{Architecture Amazon Web Services (AWS)}
-AWS propose l'écosystème le plus mature pour le traitement de données massives (Big Data) couplé au MLOps. Une architecture MLOps type sur AWS est composée des éléments suivants \cite{41, 43, 60} :
+\textbf{1. Contexte et ampleur du défi technique} \\
+Netflix s'appuie sur le Cloud AWS pour diffuser des milliards d'heures de contenu à l'échelle mondiale et opérer sa plateforme analytique \cite{86}. La création de modèles d'intelligence artificielle personnalisés exige d'entraîner un modèle spécifique pour chaque pays et chaque langue, ce qui génère une base de 2 000 à 4 000 modèles en production \cite{76}. Lors des phases de recherche d'hyperparamètres (\textit{hyperparameter sweeps}), ce volume explose pour atteindre simultanément entre $10^5$ et $10^6$ modèles \cite{76}. Ces charges de travail massives, imprévisibles et extrêmement gourmandes en ressources (processeurs, mémoire, GPU) risquent à tout moment de saturer l'infrastructure et d'impacter les applications critiques en production \cite{76}. 
+
+Pour répondre à ce défi tout en préservant la productivité des \textit{Data Scientists}, Netflix a conçu une architecture de référence modulaire, décomposée en plusieurs couches spécialisées et documentée dans ses retours d'expérience sur AWS \cite{76}.
+
+\vspace{0.3cm}
+\textbf{2. Les couches de l'architecture de référence Netflix}
+
+\textbf{A. Couche de gestion des données (Data Lake et Analytics)} \\
+La fondation de l'architecture repose sur un découplage strict entre la puissance de calcul et le stockage :
 \begin{itemize}
-    \item[$\bullet$] \textbf{Data Lake (Amazon S3) :} Couche de stockage objet illimitée permettant de stocker les données brutes (images, vidéos) et les artefacts de modèles à un coût très faible.
-    \item[$\bullet$] \textbf{Calcul Distribué (Amazon EMR) :} Service managé permettant de déployer instantanément des clusters Apache Spark ou Hadoop. Il est utilisé pour le prétraitement intensif et l'ingénierie des caractéristiques (\textit{Feature Engineering}) à grande échelle.
-    \item[$\bullet$] \textbf{Orchestration et MLOps (Amazon SageMaker) :} Cœur de l'architecture IA sur AWS, SageMaker intègre le \textit{Model Registry} (gestion des versions), \textit{SageMaker Pipelines} (CI/CD pour ML) et des environnements gérés pour l'entraînement continu (CT).
-    \item[$\bullet$] \textbf{Inférence (API Gateway \& Lambda / SageMaker Endpoints) :} Couche de service permettant d'exposer le modèle entraîné sous forme d'API REST sécurisée pour réaliser des prédictions en ligne ou par lots.
+    \item[$\bullet$] \textbf{Data Lake unique :} L'intégralité des données (pétaoctets de vidéos et données tabulaires) est centralisée sur Amazon S3 \cite{76}. 
+    \item[$\bullet$] \textbf{Formats et Moteurs de requêtes :} Les données tabulaires sont stockées au format Parquet et exposées via des tables Iceberg \cite{76}. Pour interroger ces données, Netflix utilise des moteurs de calcul distribué comme Apache Spark et Presto \cite{76}.
+    \item[$\bullet$] \textbf{Fédération et Métadonnées :} L'accès est abstrait par \textit{Genie}, un moteur de requêtes fédéré développé en interne (open source), tandis que la découverte des données et la gestion des métadonnées sont assurées par \textit{Metacat} \cite{76}.
+    \item[$\bullet$] \textbf{Bypass pour le ML :} Pour éviter les goulots d'étranglement des moteurs SQL lors de l'entraînement, des outils spécifiques permettent aux pipelines ML de se connecter directement à S3, saturant la bande passante réseau pour ingérer les données à très haute vitesse \cite{76}.
 \end{itemize}
 
-\subsubsection{Architecture Microsoft Azure}
-L'architecture MLOps d'Azure (notamment le framework Azure MLOps v2) est très structurée et s'intègre profondément avec les outils de développement Microsoft. Elle se décompose ainsi \cite{41, 60} :
+\textbf{B. Couche d'orchestration des conteneurs et de calcul (Compute)} \\
 \begin{itemize}
-    \item[$\bullet$] \textbf{Data Estate (Azure Data Lake Storage) :} Équivalent d'Amazon S3, optimisé pour les charges de travail analytiques hiérarchiques.
-    \item[$\bullet$] \textbf{Traitement des données (Azure Databricks) :} Plateforme analytique optimisée pour Apache Spark, souvent utilisée pour le nettoyage et la préparation distribuée des données.
-    \item[$\bullet$] \textbf{Gestion MLOps (Azure Machine Learning Workspace) :} Un espace de travail unifié gérant les expérimentations, le registre de modèles et le déploiement. 
-    \item[$\bullet$] \textbf{Inférence (Azure Kubernetes Service - AKS) :} Azure privilégie souvent le déploiement des modèles sous forme de microservices conteneurisés via AKS pour garantir une mise à l'échelle robuste en production.
+    \item[$\bullet$] \textbf{Conteneurisation via Titus / AWS Batch :} Netflix utilise son orchestrateur interne \textit{Titus} (dont l'équivalent AWS est AWS Batch) pour lancer des conteneurs à grande échelle depuis les environnements locaux vers le Cloud \cite{76}.
+    \item[$\bullet$] \textbf{Mécanisme de files d'attente (Isolation) :} Pour éviter que les pics d'entraînement n'impactent la production, les requêtes ML sont placées dans des files d'attente strictes. Ces files "fuient" (\textit{leak}) progressivement les tâches vers Amazon ECS ou Kubernetes en fonction des priorités \cite{76}.
+    \item[$\bullet$] \textbf{Optimisation FinOps par l'IA :} Les instances GPU étant onéreuses, Netflix a développé des modèles de Machine Learning secondaires chargés de prédire avec précision les ressources (CPU, RAM, GPU) requises par une tâche avant son lancement \cite{76}. Cela permet un placement optimal des \textit{jobs} sur les serveurs physiques, augmentant le taux d'utilisation et réduisant drastiquement les coûts opérationnels \cite{76}.
 \end{itemize}
 
-\subsubsection{Architecture Google Cloud Platform (GCP)}
-GCP est particulièrement réputé pour ses capacités de traitement de données et sa forte intégration avec des frameworks open source comme TensorFlow. Ses composants architecturaux incluent \cite{41, 60} :
+\textbf{C. Couche d'orchestration des Workflows (Pipelines)} \\
+Les pipelines ML de Netflix peuvent durer des semaines (par exemple pour la vision par ordinateur) et nécessitent de transférer le calcul d'une instance à forte mémoire vers une instance GPU \cite{76}.
 \begin{itemize}
-    \item[$\bullet$] \textbf{Stockage (Google Cloud Storage) :} Référentiel unifié pour les données brutes et les modèles.
-    \item[$\bullet$] \textbf{Calcul Big Data (Cloud Dataproc) :} Service managé équivalent à Amazon EMR, permettant d'exécuter des clusters Spark/Hadoop de manière éphémère.
-    \item[$\bullet$] \textbf{Plateforme MLOps (Vertex AI) :} L'environnement de bout en bout de Google, qui fusionne AutoML et MLOps. Vertex AI intègre des pipelines (souvent basés sur Kubeflow), un registre de modèles et des points de terminaison pour l'inférence.
+    \item[$\bullet$] \textbf{Netflix Conductor / AWS Step Functions :} L'orchestration asynchrone des différentes étapes du pipeline est gérée par \textit{Netflix Conductor} (équivalent d'AWS Step Functions). Il gère la montée en charge requise pour exécuter des milliers de tests A/B en parallèle \cite{76}.
+    \item[$\bullet$] \textbf{Signalisation des données (Data Signaling) :} L'architecture est purement événementielle. Au lieu d'interroger les bases de données à intervalles réguliers (\textit{polling}), les pipelines ML sont déclenchés automatiquement par des événements (via Amazon EventBridge) dès qu'un pipeline ETL en amont a terminé l'écriture d'une table \cite{76}.
 \end{itemize}
 
-\subsection{Analyse comparative des performances}
-Bien que les trois plateformes offrent des architectures fonctionnellement similaires, des différences techniques apparaissent lors de l'exécution de charges de travail distribuées intensives. L'étude de référence menée par Shanmugam et al. \cite{60} a mesuré les performances brutes de ces fournisseurs face à des algorithmes de Machine Learning distribué. Le tableau \ref{tab:cloud_comparison} synthétise ces résultats.
+\textbf{D. Couche d'environnement de développement et d'observabilité} \\
+\begin{itemize}
+    \item[$\bullet$] \textbf{Workspaces interactifs :} Les \textit{Jupyter Notebooks} (Python, R) sont hébergés sur des instances Amazon SageMaker Notebooks \cite{76}. Pour l'écosystème Scala/JVM, Netflix a développé et rendu open source le projet \textit{Polynote} \cite{76}.
+    \item[$\bullet$] \textbf{Supervision as Code :} La surveillance des modèles en production (temps d'exécution, comportement du flux) est réalisée via des notebooks transformés en tableaux de bord. Grâce aux outils open source \textit{Papermill} et \textit{Commuter}, les notebooks sont exécutés périodiquement et hébergés pour fournir des visualisations interactives via des bibliothèques comme Bokeh ou Plotly \cite{76}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{3. Le Framework Fédérateur : Metaflow} \\
+Pour lier toutes ces couches d'infrastructure sans forcer les \textit{Data Scientists} à devenir des experts en ingénierie Cloud (Docker, Step Functions), Netflix a créé \textbf{Metaflow} \cite{76}. Ce framework Python abstrait la complexité :
+\begin{itemize}
+    \item[$\bullet$] L'utilisateur écrit du code Python idiomatique (TensorFlow, PyTorch, Scikit-learn) \cite{76}.
+    \item[$\bullet$] Metaflow intègre une couche de données à haut débit depuis Amazon S3 \cite{76}.
+    \item[$\bullet$] L'ajout d'un simple décorateur (ex: \texttt{@batch}) dans le code suffit pour que la fonction soit automatiquement exécutée sur une instance AWS Batch avec une mémoire ou des GPU spécifiés \cite{76}.
+    \item[$\bullet$] En un clic, le code Python est compilé et exporté vers AWS Step Functions pour une orchestration en production \cite{76}.
+    \item[$\bullet$] Metaflow versionne automatiquement toutes les métadonnées de chaque exécution, garantissant une reproductibilité totale \cite{76}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{4. Implémentation de référence sur AWS (Infrastructure as Code)} \\
+L'architecture de Netflix est reproductible via un modèle AWS CloudFormation (disponible via \texttt{netflix/metaflow-tools}) qui provisionne l'infrastructure complète \cite{76}.
+\begin{itemize}
+    \item[$\bullet$] \textbf{Ressources provisionnées :} L'infrastructure déploie automatiquement un bucket S3 pour les artefacts, un environnement de calcul AWS Batch (avec mode de provisionnement EC2), un cluster Amazon ECS Fargate (avec accès au port 80), une base de données Postgres, DynamoDB, et un Network Load Balancer (NLB) \cite{76}.
+    \item[$\bullet$] \textbf{Sécurité IAM stricte :} Des rôles AWS IAM appliquant le principe du moindre privilège sont générés pour garantir que, par exemple, AWS Batch ne puisse extraire de S3 que les données strictement nécessaires, de manière sécurisée \cite{76}.
+    \item[$\bullet$] \textbf{Intégration et Catalogue :} L'ensemble est intégré à Amazon EventBridge pour la signalisation des données et à AWS Service Catalog pour mettre cette infrastructure à disposition des utilisateurs via un portail en libre-service \cite{76}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tableau Synthétique : Correspondance des composants (Netflix vs AWS)}
 
 \begin{table}[H]
 \centering
-\caption{Comparaison des performances des architectures Cloud pour le ML distribué \cite{60}}
-\label{tab:cloud_comparison}
+\caption{Cartographie de l'Architecture de Référence MLOps (Netflix vs AWS)}
+\label{tab:netflix_aws_mapping}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{3cm}|p{3.5cm}|p{2.5cm}|p{4cm}|}
+\begin{tabular}{|p{4.5cm}|p{5cm}|p{5cm}|}
 \hline
-\textbf{Architecture Cloud} & \textbf{Débit (Throughput)} \newline \textit{(instances/sec)} & \textbf{Latence} \newline \textit{(ms)} & \textbf{Utilisation des Ressources} \newline \textit{(CPU / RAM / Stockage)} \\
-\hline
-\textbf{GCP} & 5200 & \textbf{45} & \textbf{85\%} / 75\% / 65\% \\
-\hline
-\textbf{AWS} & 5000 & 50 & 80\% / 70\% / 60\% \\
-\hline
-\textbf{Microsoft Azure} & 4500 & 60 & 75\% / 65\% / 55\% \\
-\hline
+\rowcolor{darkgreen!20} \textbf{Couche Architecturale} & \textbf{Outil Interne / Open Source Netflix} & \textbf{Équivalent / Service Managé AWS} \\ \hline
+\textbf{Stockage (Data Lake)} & S3, Iceberg, Parquet \cite{76} & Amazon S3 \cite{76} \\ \hline
+\textbf{Requêtage \& Métadonnées} & Genie, Metacat, Presto, Spark \cite{76} & Amazon Athena, AWS Glue, EMR \\ \hline
+\textbf{Calcul \& Conteneurisation} & Titus \cite{76} & AWS Batch, Amazon ECS (Fargate) \cite{76} \\ \hline
+\textbf{Orchestration de Workflows} & Netflix Conductor \cite{76} & AWS Step Functions \cite{76} \\ \hline
+\textbf{Signalisation (Événements)} & Bus d'événements interne \cite{76} & Amazon EventBridge \cite{76} \\ \hline
+\textbf{Environnement (Workspace)} & Polynote, Jupyter \cite{76} & Amazon SageMaker Notebooks \cite{76} \\ \hline
+\textbf{Supervision (Dashboards)} & Papermill, Commuter \cite{76} & Amazon CloudWatch \\ \hline
+\textbf{Framework d'abstraction} & Metaflow \cite{76} & Amazon SageMaker Pipelines \\ \hline
 \end{tabular}
 \end{table}
 
-Il ressort de cette analyse que Google Cloud Platform (GCP) démontre une efficacité matérielle supérieure (meilleure utilisation CPU et latence la plus faible), ce qui le rend très attractif pour l'inférence en temps réel. Cependant, AWS offre un équilibre exceptionnel : sa latence (50 ms) reste extrêmement performante, mais il se distingue surtout par la flexibilité et la maturité de ses services d'orchestration (Amazon EMR) qui permettent de gérer très finement les coûts opérationnels (via les instances Spot) \cite{43, 60}.
 
-\subsection{Synthèse des approches (Review)}
-La revue de la littérature et l'analyse de l'état de l'art mettent en évidence un consensus clair dans l'ingénierie logicielle appliquée à l'intelligence artificielle : l'ère des scripts monolithiques locaux est révolue. Pour qu'un modèle survive en production, son architecture doit respecter trois principes fondamentaux :
-\begin{enumerate}
-    \item[$\bullet$] \textbf{Le découplage par microservices :} Le stockage des données, l'ingénierie des caractéristiques, l'entraînement et l'inférence doivent être des modules distincts et isolés.
-    \item[$\bullet$] \textbf{L'élasticité Cloud :} Les traitements (notamment l'apprentissage et le prétraitement) nécessitent des pics de calcul intenses mais de courte durée. Le recours à des services comme Amazon EMR, Azure Databricks ou Cloud Dataproc permet de provisionner des clusters massifs puis de les détruire, optimisant ainsi les ressources.
-    \item[$\bullet$] \textbf{L'automatisation du cycle (CI/CD/CT) :} L'architecture doit intégrer un registre de modèles et des déclencheurs automatiques pour permettre l'entraînement continu (CT) face à la dérive des données (Data Drift).
-\end{enumerate}
 
-\subsection{Positionnement par rapport au projet}
+\subsection{Cas d'étude 2 : Capital One -- MLOps ultra-sécurisé, conformité et gouvernance dans le secteur bancaire (FSI)}
 
-L'étude approfondie de l'état de l'art nous permet de définir clairement les contours de l'architecture à concevoir pour le compte du client de DESEMITS LLC. La problématique à résoudre est l'industrialisation d'un modèle de vision par ordinateur face à des volumes massifs d'images agricoles.
+\textbf{1. Contexte et exigences du secteur financier} \\
+Le secteur des services financiers (Financial Services Industry - FSI) est soumis à des contraintes réglementaires extrêmes. Pour Capital One, une banque gérant plus de 100 millions de clients, l'adoption de l'Intelligence Artificielle générative ne pouvait se faire sans une infrastructure capable de prouver aux régulateurs que chaque décision est auditable, sécurisée et maîtrisée \cite{77}. L'enjeu technique était de passer à l'échelle pour des dizaines de milliers d'employés (notamment plus de 10 000 agents du service client utilisant déjà l'IA générative dans leur flux de travail), tout en atténuant de manière stricte les risques de non-conformité \cite{77}. 
 
-Notre positionnement stratégique s'oriente vers la conception d'une \textbf{architecture MLOps Cloud sur-mesure déployée sur Amazon Web Services (AWS)}. Bien que GCP présente une latence légèrement inférieure, le choix d'AWS se justifie par plusieurs impératifs critiques propres à notre projet :
-
+\vspace{0.3cm}
+\textbf{2. Fondation architecturale : Migration "All-In" et Cloud-Native} \\
+Pour rendre possible une pratique MLOps performante et réactive, Capital One a pris une décision d'infrastructure radicale : fermer la totalité de ses centres de données physiques (passant d'environ 15 centres à zéro) pour migrer à 100\,\% vers le Cloud public AWS \cite{77}.
 \begin{itemize}
-    \item[$\bullet$] \textbf{Traitement Big Data hautement scalable :} Le volume d'images agricoles nécessitant un prétraitement distribué lourd (via PySpark), la maturité d'Amazon EMR couplée au stockage Amazon S3 offre la meilleure synergie du marché pour absorber des pétaoctets de données non structurées.
-    \item[$\bullet$] \textbf{Optimisation FinOps :} AWS permet une gestion granulaire des coûts. Nous pourrons provisionner des clusters éphémères composés d'instances "Spot" (enchères sur la capacité excédentaire) pour réaliser l'entraînement continu et le prétraitement à des coûts réduits jusqu'à 70\%, répondant ainsi à notre objectif budgétaire strict.
-    \item[$\bullet$] \textbf{Souveraineté et Sécurité :} Conformément aux contraintes du RGPD, l'écosystème AWS permet de confiner strictement l'intégralité du pipeline (stockage S3, calcul EMR, et déploiement) au sein de régions européennes (ex: eu-west-1), tout en appliquant des politiques de gestion des identités (IAM) basées sur le principe du moindre privilège.
+    \item[$\bullet$] \textbf{Centralisation sur Amazon S3 et "Data Gravity" :} Cette migration a permis de consolider l'intégralité des données propriétaires sur Amazon S3 \cite{77}. Ce choix architectural a rapproché physiquement les données des grappes de calcul surpuissantes, créant un effet de « gravité des données » (\textit{Data Gravity}) considéré par les architectes de la banque comme le précurseur indispensable au succès de l'IA \cite{77}.
+    \item[$\bullet$] \textbf{Architecture Serverless :} Le développement MLOps de Capital One s'inscrit dans une démarche \textit{Cloud-native} et \textit{Serverless}, éliminant la gestion des serveurs sous-jacents pour les scientifiques des données et offrant une élasticité instantanée \cite{77}.
 \end{itemize}
 
-Ce positionnement constitue le socle de notre démarche d'ingénierie. Le modèle d'intelligence artificielle expérimental du client quittera l'environnement local pour être intégré dans ce pipeline AWS. Le chapitre suivant sera consacré à la méthodologie de ce projet, en détaillant l'analyse des besoins, les diagrammes modélisant le système, et la conception logique et physique de cette architecture Cloud.
+\vspace{0.3cm}
+\textbf{3. La Gouvernance MLOps : Le modèle des « Trois Lignes de Défense »} \\
+Contrairement aux entreprises technologiques classiques, l'architecture MLOps d'une banque doit intégrer la conformité de manière systémique. Capital One a institutionnalisé un modèle de gouvernance strict à "trois lignes de défense" \cite{77} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{1\textsuperscript{ère} Ligne (Développeurs et MLOps) :} Les ingénieurs et chercheurs conçoivent les solutions, en intégrant des pratiques de responsabilité algorithmique dès la conception (\textit{Privacy by design}) \cite{77}.
+    \item[$\bullet$] \textbf{2\textsuperscript{ème} Ligne (Bureau des Risques / \textit{Model Risk Office}) :} Cette équipe indépendante de la première ligne évalue, conteste et valide chaque modèle avant son déploiement. Des tests de référence internes et externes rigoureux sont exécutés pour s'assurer que le modèle respecte les normes de l'entreprise et la loi \cite{77}.
+    \item[$\bullet$] \textbf{3\textsuperscript{ème} Ligne (Audit interne et externe) :} Une fonction d'audit inspecte le système en continu et fait un rapport direct au conseil d'administration. Les régulateurs gouvernementaux interviennent au minimum chaque trimestre pour vérifier que les contrôles entre la première et la deuxième ligne sont effectifs \cite{77}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{4. Couche de Sécurité Active : L'intégration des "Guardrails"} \\
+Pour déployer des modèles génératifs sans risquer d'exposer des données ou de subir des attaques, l'architecture MLOps intègre nativement des garde-fous, notamment \textit{NeMo Guardrails} (développé par NVIDIA), au cœur de son pipeline d'inférence \cite{77}.
+\begin{itemize}
+    \item[$\bullet$] \textbf{Sécurisation en Entrée :} Les garde-fous interceptent et bloquent les requêtes malveillantes (tentatives de \textit{Jailbreak} ou d'injection de requêtes) de manière dynamique, en exploitant les bases de données de menaces mondiales mises à jour en continu \cite{77}.
+    \item[$\bullet$] \textbf{Sécurisation en Sortie et Human-in-the-Loop :} Les réponses sont filtrées en temps réel pour garantir que le modèle reste sur le sujet autorisé et que le contenu généré est sûr. Pour les cas d'usage à haut risque impliquant des clients finaux, un agent humain valide les sorties avant toute transmission (\textit{Human-in-the-Loop}) \cite{77}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{5. Qualité des données, Personnalisation (Fine-Tuning) et FinOps} \\
+Les architectes de Capital One ont constaté que les modèles généralistes prêts à l'emploi n'offraient pas la précision requise pour les spécificités de la culture d'entreprise bancaire \cite{77}.
+\begin{itemize}
+    \item[$\bullet$] \textbf{Qualité vs Volume :} L'architecture insiste sur la qualité des données (complétude, nettoyage, cohérence) plutôt que sur le simple volume. Des pipelines automatisés assurent la qualité des données d'entraînement, étape cruciale pour éviter que les modèles ne se basent sur des variations aberrantes \cite{77}.
+    \item[$\bullet$] \textbf{PEFT et LoRA :} La plateforme MLOps intègre des pipelines de personnalisation avancés : pré-entraînement continu, ajustement fin supervisé (SFT), et des méthodes paramétriques efficaces comme LoRA (\textit{Low-Rank Adaptation}) et QLoRA \cite{77}.
+    \item[$\bullet$] \textbf{Optimisation FinOps massive de l'inférence :} L'inférence représentant le coût continu le plus élevé, l'infrastructure est rigoureusement optimisée. Cette ingénierie de pointe a permis à Capital One de réduire les coûts d'inférence de trois ordres de grandeur (un facteur 1 000) en l'espace de seulement 20 mois \cite{77}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{6. Supervision Post-Déploiement et Effet "Heisenberg"} \\
+Chez Capital One, le déploiement d'un modèle n'est considéré que comme « la première marche de l'escalier vers le paradis de l'IA » \cite{77}. 
+\begin{itemize}
+    \item[$\bullet$] \textbf{L'effet Heisenberg et la dérive induite :} L'entreprise observe que le simple fait de déployer un modèle modifie le comportement des utilisateurs, ce qui altère rapidement la distribution des données réelles par rapport à la phase d'entraînement. Le pipeline MLOps gère donc une observabilité continue pour capturer cette nouvelle réalité et déclencher des réentraînements \cite{77}.
+    \item[$\bullet$] \textbf{Validation en ligne (A/B Testing) :} Parce que les tests hors ligne sur des données anciennes ne sont souvent pas de bons prédicteurs des performances réelles, la plateforme MLOps est instrumentée pour exécuter des tests en ligne limités (A/B testing) afin de valider continuellement la performance des algorithmes en production \cite{77}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tableau Synthétique : Correspondance des composants (Capital One)}
+
+\begin{table}[H]
+\centering
+\caption{Cartographie de l'Architecture MLOps Sécurisée (Secteur Bancaire / FSI)}
+\label{tab:capitalone_mapping}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+\hline
+\rowcolor{darkgreen!20} \textbf{Exigence / Couche Architecturale} & \textbf{Solutions et Pratiques implémentées} \\ \hline
+\textbf{Stockage (Data Gravity)} & Migration totale sur AWS, stockage massif et centralisé sur Amazon S3 \cite{77} \\ \hline
+\textbf{Sécurisation (Entrée/Sortie)} & Déploiement de \textit{NVIDIA NeMo Guardrails} pour filtrer le \textit{Jailbreak} et garantir la sécurité du contenu (avec \textit{Human-in-the-Loop} si nécessaire) \cite{77} \\ \hline
+\textbf{Gouvernance (Conformité)} & Validation stricte à 3 lignes de défense : 1. Développeurs, 2. Model Risk Office, 3. Auditeurs et Régulateurs \cite{77} \\ \hline
+\textbf{Ajustement des modèles} & Personnalisation via \textit{Fine-Tuning}, LoRA et QLoRA \cite{77} \\ \hline
+\textbf{Supervision} & Observabilité continue pour contrer la dérive des données (Effet Heisenberg) et Tests A/B en production \cite{77} \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Cas d'étude 3 : Riot Games -- Inférence et déploiement mondialisé à très faible latence (Edge Computing)}
+
+\textbf{1. Contexte et exigence de latence critique} \\
+Pour des jeux compétitifs d'envergure mondiale tels que \textit{League of Legends}, l'expérience du joueur et la réactivité de l'infrastructure sont des piliers fondamentaux. Face à l'augmentation de la base de joueurs, Riot Games a identifié l'opportunité de moderniser son infrastructure tout en maintenant une empreinte mondiale \cite{87}. Le défi d'ingénierie consistait à déployer des serveurs de jeu et des charges de travail applicatives capables de s'adapter dynamiquement à l'activité des joueurs, tout en éliminant les délais de transmission inhérents aux architectures Cloud trop centralisées \cite{87}.
+
+\vspace{0.3cm}
+\textbf{2. La stratégie de déploiement hybride et standardisée} \\
+Pour contourner les limites physiques de la latence, Riot Games a repensé la topologie de son infrastructure en adoptant un modèle de déploiement mondial standardisé à trois niveaux d'abstraction \cite{87} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Niveau 1 (Régions AWS) :} L'infrastructure privilégie en premier lieu les \textit{Régions AWS} classiques lorsqu'elles sont disponibles et suffisamment proches des bassins de joueurs \cite{87}.
+    \item[$\bullet$] \textbf{Niveau 2 (AWS Local Zones) :} Lorsque les Régions sont trop éloignées, Riot Games s'appuie sur les \textit{AWS Local Zones}. Celles-ci rapprochent les services fondamentaux d'AWS (calcul, stockage) directement dans les grandes zones métropolitaines du monde entier, offrant la même élasticité à la demande mais avec une latence considérablement réduite \cite{87}.
+    \item[$\bullet$] \textbf{Niveau 3 (AWS Outposts) :} Dans les zones géographiques où ni les Régions ni les Local Zones ne sont (encore) implantées, l'entreprise déploie \textit{AWS Outposts} (des baies de serveurs physiques AWS installées dans des centres de données locaux) \cite{87}.
+\end{itemize}
+Au fur et à mesure que de nouvelles \textit{Local Zones} sont inaugurées dans le monde, Riot Games y migre progressivement ses charges de travail depuis \textit{Outposts}, évoluant vers un modèle où AWS gère entièrement à la fois l'infrastructure et les installations physiques \cite{87}.
+
+\vspace{0.3cm}
+\textbf{3. Conteneurisation et standardisation des calculs} \\
+L'agilité de ce déploiement massif repose sur la conteneurisation. Riot Games utilise de manière intensive \textbf{Amazon EKS (Elastic Kubernetes Service)}, un service entièrement managé qui permet d'automatiser et d'exécuter des clusters Kubernetes de manière transparente dans le Cloud \cite{87}. Ces clusters tournent sur des instances \textbf{Amazon EC2}, offrant à Riot Games une plateforme de calcul disposant du choix le plus large en matière de processeurs, de stockage et de mise en réseau pour adapter la puissance à chaque charge de travail \cite{87}.
+
+\vspace{0.3cm}
+\textbf{4. Réseau dédié et contournement d'Internet} \\
+Déployer des serveurs en périphérie (\textit{Edge}) ne suffit pas si les données doivent transiter par les routes imprévisibles de l'Internet public. Pour connecter ces déploiements distribués de manière sécurisée et ultra-rapide à son propre réseau principal (le backbone \textit{Riot Direct}), Riot Games utilise \textbf{AWS Direct Connect} \cite{87}. Ce service fournit une connexion réseau physique et dédiée directement reliée à l'infrastructure d'AWS, garantissant une bande passante constante et une latence minimale \cite{87}.
+
+\vspace{0.3cm}
+\textbf{5. Abstraction de l'infrastructure et collaboration DevOps} \\
+L'un des bénéfices majeurs de cette architecture de référence est la transparence opérationnelle qu'elle offre aux développeurs. Comme l'indique David Press, responsable technique pour \textit{League of Legends} : « \textit{En tant qu'équipe de jeu, nous n'avons pas à nous demander si notre jeu tourne dans une AWS Local Zone, un AWS Outpost ou une Région AWS — c'est exactement la même chose pour nous} » \cite{87}. 
+
+Cette standardisation fournit une interface, une facturation et des outils totalement uniformisés. Elle libère les développeurs de la gestion de l'infrastructure, leur permettant d'investir leur temps dans l'amélioration de l'expérience joueur \cite{87}. De plus, cette approche est soutenue par une collaboration étroite (planification des capacités, coordination des lancements) avec les architectes de solutions et les gestionnaires de comptes techniques d'AWS, agissant comme de véritables collaborateurs intégrés à l'équipe \cite{87}.
+
+\vspace{0.3cm}
+\textbf{Tableau Synthétique : Composants de l'Architecture Mondiale (Riot Games)}
+
+\begin{table}[H]
+\centering
+\caption{Cartographie de l'Architecture Cloud à très faible latence (Riot Games / AWS)}
+\label{tab:riotgames_mapping}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{5.5cm}|p{8.5cm}|}
+\hline
+\rowcolor{darkgreen!20} \textbf{Exigence / Couche Architecturale} & \textbf{Solutions et Services AWS implémentés} \\ \hline
+\textbf{Déploiement en périphérie (Edge)} & Stratégie combinée priorisant les Régions AWS, puis les \textit{AWS Local Zones} (pour les métropoles mondiales), et enfin \textit{AWS Outposts} \cite{87} \\ \hline
+\textbf{Orchestration \& Conteneurisation} & Utilisation centralisée d'\textit{Amazon EKS} (Kubernetes managé) tournant sur des instances de calcul \textit{Amazon EC2} \cite{87} \\ \hline
+\textbf{Interconnexion \& Réseau Backbone} & Connexion dédiée du réseau propriétaire (\textit{Riot Direct}) à l'infrastructure via \textit{AWS Direct Connect} \cite{87} \\ \hline
+\textbf{Abstraction \& Agilité} & Interface et outils unifiés quel que soit le lieu d'exécution physique (Region, Local Zone ou Outpost), déchargeant les développeurs de la gestion matérielle \cite{87} \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Cas d'étude 4 : Expedia Group -- Standardisation MLOps, conteneurisation et inférence multi-région}
+
+\textbf{1. Contexte, fragmentation et défi de la latence globale} \\
+Le géant du voyage Expedia Group opère plus de 20 marques mondiales (Expedia, Hotels.com, Vrbo, etc.) et s'appuie sur plus de 650 équipes d'ingénierie pour soutenir 200 sites de voyage à travers le monde \cite{81}. L'entreprise a été confrontée à un défi critique sur son service de suggestion (ESS -- \textit{Expedia Suggest Service}), un algorithme basé sur la localisation et l'historique d'achat des clients qui affiche des prédictions dès que l'utilisateur commence à taper sa recherche \cite{78}. 
+
+Cependant, l'infrastructure historique du groupe était centralisée dans un centre de données unique situé à Chandler, en Arizona. Cet éloignement physique générait une latence réseau inacceptable de 700 millisecondes pour les clients de la région Asie-Pacifique, entraînant des erreurs de page et l'abandon des utilisateurs \cite{78}. L'enjeu était de moderniser l'infrastructure pour standardiser les déploiements de ces centaines d'équipes et rapprocher les modèles d'IA au plus près des utilisateurs finaux \cite{78, 81}.
+
+\vspace{0.3cm}
+\textbf{2. Standardisation des déploiements via AWS Service Catalog} \\
+Pour unifier les pratiques d'ingénierie sans freiner l'innovation de ses 650 équipes, Expedia a mis en place une plateforme standardisée :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Plateforme DBaaS et Gouvernance :} L'entreprise a développé \textit{Cerebro}, une plateforme de base de données en tant que service (DBaaS). Grâce à \textbf{AWS Service Catalog}, une petite équipe d'ingénieurs centraux a pu déployer ce catalogue à l'échelle de l'organisation, permettant aux équipes de provisionner rapidement des environnements tout en respectant nativement les meilleures pratiques et la gouvernance du groupe \cite{81}.
+    \item[$\bullet$] \textbf{Modèle de déploiement standardisé :} En créant des modèles d'infrastructure reproductibles, les équipes de science des données ne sont plus limitées par des contraintes de débit ou de capacité CPU, et peuvent provisionner l'infrastructure de nouvelles initiatives de manière autonome \cite{78}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{3. Architecture de données massives et Conteneurisation} \\
+Pour alimenter ses modèles d'intelligence artificielle, l'architecture a été migrée vers un modèle orienté conteneurs et services managés :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Ingestion et orchestration Big Data :} Expedia a construit un système flexible pour ingérer de hauts volumes de données (en temps réel et par lots) en orchestrant \textbf{AWS Glue}, Amazon DynamoDB, Amazon Aurora et Amazon CloudWatch \cite{81}.
+    \item[$\bullet$] \textbf{Conteneurisation via Amazon ECS :} La migration des applications vers des plateformes conteneurisées basées sur \textbf{Amazon Elastic Container Service (ECS)} a permis au groupe de se libérer de la gestion des serveurs sur site, de ne payer que pour les ressources réellement utilisées, et d'ajouter de la capacité dynamiquement \cite{78, 81}.
+    \item[$\bullet$] \textbf{Calcul intensif (Deep Learning) :} Pour l'entraînement de ses algorithmes de traitement d'images, le groupe utilise des instances \textbf{Amazon EC2 P3} (optimisées GPU). Ces modèles analysent des dizaines de millions de photos avec une précision supérieure à 99\,\%, afin de sélectionner automatiquement les images d'hôtels les plus pertinentes \cite{81}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{4. Réplication Multi-Région et réduction drastique de la latence} \\
+Pour résoudre le défi de la latence de son service de suggestion (ESS), Expedia a repensé son modèle de déploiement mondial :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Déploiement mondial et Haute Disponibilité :} Le service a d'abord été déployé en Asie-Pacifique, puis rapidement répliqué dans les régions États-Unis et Europe. L'architecture s'appuie sur plusieurs \textit{Zones de Disponibilité (AZ)} pour garantir la reprise après sinistre et une disponibilité continue \cite{78}. Les données elles-mêmes sont sécurisées via \textbf{Amazon S3} et ses mécanismes de réplication automatique \cite{81}.
+    \item[$\bullet$] \textbf{Gains de performance (Inférence) :} Le rapprochement des points d'inférence au plus près des utilisateurs a permis de faire chuter la latence moyenne du réseau de 700 millisecondes à \textbf{moins de 50 millisecondes} \cite{78}. À l'échelle globale, cette plateforme traite plus de \textbf{600 milliards de prédictions IA par an} à partir de 70 pétaoctets de données, avec des temps de réponse sous la milliseconde \cite{81}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{5. Sécurisation et gouvernance des données personnelles (PII)} \\
+L'industrie du voyage traitant quotidiennement des données hautement sensibles, la sécurité du Data Lake est une priorité absolue :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Protection via Amazon Macie :} Face à l'augmentation des exigences réglementaires autour des données personnelles (PII) et de santé (PHI), Expedia applique une approche de sécurité multicouche. Le groupe exploite \textbf{Amazon Macie}, un service qui utilise lui-même le Machine Learning pour découvrir, surveiller et protéger automatiquement les données sensibles stockées dans les environnements AWS \cite{81}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tableau Synthétique : Composants MLOps et Data (Expedia Group)}
+
+\begin{table}[H]
+\centering
+\caption{Cartographie de l'Architecture et des Services Cloud (Expedia Group)}
+\label{tab:expedia_mapping}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{5.5cm}|p{8.5cm}|}
+\hline
+\rowcolor{darkgreen!20} \textbf{Exigence / Couche Architecturale} & \textbf{Solutions et Services AWS implémentés} \\ \hline
+\textbf{Standardisation \& Libre-service} & Mise à disposition d'environnements (ex: DBaaS \textit{Cerebro}) validés et standardisés via \textit{AWS Service Catalog} \cite{81} \\ \hline
+\textbf{Ingestion de données} & Pipelines Big Data temps réel et batch via \textit{AWS Glue}, \textit{DynamoDB} et \textit{Amazon Aurora} \cite{81} \\ \hline
+\textbf{Orchestration \& Conteneurisation} & Migration vers des applications conteneurisées et pilotées par \textit{Amazon ECS} \cite{78, 81} \\ \hline
+\textbf{Performance \& Faible Latence} & Réplication mondiale sur de multiples \textit{Availability Zones} faisant chuter la latence de 700 ms à $< 50$ ms \cite{78} \\ \hline
+\textbf{Gouvernance \& Sécurité des PII} & Détection et supervision en continu des données sensibles (PII/PHI) par \textit{Amazon Macie} \cite{81} \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Cas d'étude 5 : Plateforme MLOps sécurisée basée sur Terraform, GitHub et Amazon SageMaker}
+
+\textbf{1. Contexte et exigence d'une architecture multi-comptes} \\
+Pour industrialiser des cas d'usage d'apprentissage automatique de manière sécurisée et reproductible, les entreprises doivent s'appuyer sur des plateformes MLOps garantissant la séparation des environnements (Développement, Préproduction, Production) et l'observabilité de bout en bout \cite{83}. Bien qu'Amazon SageMaker propose des outils CI/CD natifs, de nombreuses organisations exigent d'utiliser leurs propres standards de gestion de code et d'infrastructure pour éviter la fragmentation technologique \cite{79}. Ce cas d'étude publié par AWS détaille une architecture de référence déployant une plateforme MLOps sécurisée reposant intégralement sur l'Infrastructure as Code (Terraform) et l'automatisation via GitHub Actions \cite{83}.
+
+\vspace{0.3cm}
+\textbf{2. Fondation : Infrastructure as Code (IaC) via Terraform} \\
+L'ensemble de l'infrastructure Cloud sous-jacente est codée, versionnée et provisionnée à l'aide de Terraform, garantissant que les environnements de développement et de production sont strictement identiques \cite{83}. L'architecture s'appuie sur sept modules Terraform réutilisables et hautement sécurisés \cite{83} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Networking (Réseau et VPC) :} Création d'un \textit{Virtual Private Cloud} (VPC) isolé, comprenant des sous-réseaux privés, des groupes de sécurité, des passerelles NAT et de multiples \textit{VPC Endpoints}. Cela permet à SageMaker de communiquer avec les autres services AWS de manière sécurisée sans transiter par l'Internet public \cite{83}.
+    \item[$\bullet$] \textbf{Sécurité (IAM et KMS) :} Déploiement de clés de chiffrement gérées par le client via \textit{AWS Key Management Service} (KMS) pour chiffrer les données. Des rôles \textit{AWS IAM} basés sur le principe du moindre privilège sont générés spécifiquement pour les utilisateurs et les services SageMaker \cite{83}.
+    \item[$\bullet$] \textbf{Gestion de l'état (S3) :} Conformément aux bonnes pratiques de l'IaC, l'état de l'infrastructure Terraform est verrouillé et stocké de manière centralisée sur Amazon S3 \cite{83}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{3. Intégration CI/CD : GitHub, GitHub Actions et AWS CodeStar} \\
+Le code source des modèles et la configuration de l'infrastructure sont hébergés sur \textbf{GitHub}. L'automatisation du cycle de vie est assurée par \textbf{GitHub Actions}, qui orchestre la construction, les tests et le déploiement de manière agnostique \cite{79, 83}.
+\begin{itemize}
+    \item[$\bullet$] \textbf{AWS CodeStar Connection :} Pour permettre à AWS de communiquer de manière sécurisée avec le dépôt GitHub, une connexion \textit{AWS CodeStar} est établie. Le jeton d'accès personnel (PAT) de GitHub est stocké de manière chiffrée dans \textit{AWS Secrets Manager} \cite{79}.
+    \item[$\bullet$] \textbf{Validation manuelle (GitHub Environments) :} Pour le déploiement des modèles vers les comptes de Préproduction et de Production, l'architecture utilise la fonctionnalité \textit{Environments} de GitHub, qui impose l'approbation manuelle d'un réviseur désigné avant d'autoriser la mise en production \cite{79}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{4. Modèles de déploiement en libre-service (SageMaker Projects \& Service Catalog)} \\
+Afin d'offrir une expérience en libre-service aux \textit{Data Scientists} sans compromettre la sécurité, l'architecture utilise \textbf{Amazon SageMaker Projects} couplé à \textbf{AWS Service Catalog} \cite{79, 83}.
+\begin{itemize}
+    \item[$\bullet$] \textbf{Portefeuille de modèles personnalisés :} Les ingénieurs MLOps créent un portefeuille de modèles CloudFormation personnalisés dans Service Catalog (ex: modèle d'entraînement pour LLM, modèle de déploiement BYOC - \textit{Bring Your Own Container}) \cite{83}.
+    \item[$\bullet$] \textbf{Clonage automatisé via Lambda :} Lorsqu'un utilisateur initie un nouveau projet dans SageMaker Studio, une fonction \textit{AWS Lambda} est automatiquement invoquée pour cloner un dépôt GitHub privé contenant le code de base du modèle sélectionné, préparant ainsi l'espace de travail instantanément \cite{83}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{5. Orchestration du Workflow et Registre de modèles (SageMaker Pipelines)} \\
+Une fois le code poussé sur GitHub, GitHub Actions déclenche l'exécution d'\textbf{Amazon SageMaker Pipelines}. Ce service orchestre les flux de travail d'apprentissage automatique de manière native sur AWS \cite{79, 83} :
+\begin{itemize}
+    \item[$\bullet$] \textbf{Exécution du pipeline (DAG) :} Le graphe d'exécution gère la préparation des données, l'entraînement du modèle et son évaluation de manière automatisée \cite{79}.
+    \item[$\bullet$] \textbf{SageMaker Model Registry :} Si le modèle dépasse le seuil de précision requis, il est automatiquement enregistré dans le registre de modèles centralisé (\textit{Model Registry}) d'AWS avec son lignage de données complet et ses métriques \cite{79, 83}. 
+    \item[$\bullet$] \textbf{Déclenchement événementiel (EventBridge) :} \textit{Amazon EventBridge} surveille le registre. Lorsque le statut d'un modèle passe à "Approuvé", EventBridge déclenche une fonction Lambda qui lance à son tour le workflow de déploiement dans GitHub Actions pour créer les \textit{Endpoints} de staging ou de production \cite{79}.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tableau Synthétique : Composants MLOps (Terraform, GitHub, SageMaker)}
+
+\begin{table}[H]
+\centering
+\caption{Cartographie de l'Architecture de Référence (AWS, Terraform, GitHub)}
+\label{tab:terraform_mapping}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{5.5cm}|p{8.5cm}|}
+\hline
+\rowcolor{darkgreen!20} \textbf{Couche / Exigence Technique} & \textbf{Solutions et Services implémentés} \\ \hline
+\textbf{Infrastructure as Code (IaC)} & Provisionnement du réseau (VPC, Endpoints), de la sécurité (IAM, KMS) et du stockage codé via \textit{Terraform} \cite{83} \\ \hline
+\textbf{Intégration \& Déploiement (CI/CD)} & Orchestration complète via \textit{GitHub Actions} avec approbation manuelle (\textit{Environments}) \cite{79, 83} \\ \hline
+\textbf{Gouvernance \& Libre-service} & Mise à disposition des templates projets via \textit{AWS Service Catalog} connectés à GitHub via \textit{AWS Lambda} et \textit{CodeStar} \cite{79, 83} \\ \hline
+\textbf{Orchestration des Workflows} & Apprentissage automatisé via \textit{Amazon SageMaker Pipelines} (graphe DAG) \cite{79, 83} \\ \hline
+\textbf{Registre \& Automatisation} & Versionnage dans \textit{SageMaker Model Registry}. Le passage en production est détecté par \textit{Amazon EventBridge} \cite{79} \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Bilan de l'état de l'art et Positionnement technologique du projet}
+
+\textbf{1. Bilan de l'état de l'art} \\
+L'analyse des architectures de référence déployées par les leaders de l'industrie (Netflix, Capital One, Riot Games, Expedia) met en évidence un consensus clair : pour qu'un modèle soit robuste et passe à l'échelle, il est impératif de découpler la gestion massive des données (Data Lake, calcul distribué) de l'orchestration du cycle de vie du Machine Learning (CI/CD, déploiement) \cite{43, 76}. 
+
+\vspace{0.3cm}
+\textbf{2. Positionnement de notre projet} \\
+La problématique du client concerne l'industrialisation d'un modèle de vision par ordinateur face à une volumétrie massive et croissante de données non structurées (images agricoles). 
+
+Pour y répondre, \textbf{notre positionnement stratégique s'appuie exactement sur l'architecture de référence du Cas d'étude n°5 (AWS, Terraform, GitHub et SageMaker) \cite{79, 83}}. Nous y apportons une simplification (déploiement sur un environnement mono-compte pour réduire la complexité administrative) et nous scindons l'architecture en deux parties distinctes et indépendantes pour absorber la charge de données.
+
+\vspace{0.3cm}
+\textbf{Partie 1 : Ingénierie des données (Data Engineering)} \\
+L'architecture de traitement des données est totalement isolée et dédiée à la préparation. Le cluster \textbf{Amazon EMR} (avec PySpark) ne fait \textbf{aucun Machine Learning}. Il a pour unique responsabilité de traiter la volumétrie massive en amont et de produire des jeux de données propres.
+
+Le flux de traitement s'opère selon la séquence suivante :
+\begin{center}
+    \textbf{Sources de données brutes} \\
+    $\downarrow$ \\
+    \textbf{Data Lake (Amazon S3)} \\
+    $\downarrow$ \\
+    \textbf{Amazon EMR (PySpark)} \\
+    (Ingestion $\rightarrow$ Nettoyage $\rightarrow$ Transformation $\rightarrow$ Feature Engineering) \\
+    $\downarrow$ \\
+    \textbf{Génération des Datasets} (\texttt{train/}, \texttt{validation/}, \texttt{test/}) \\
+    $\downarrow$ \\
+    \textbf{Data Lake (Amazon S3)}
+\end{center}
+
+À l'issue de cette première partie, les données agricoles sont nettoyées, transformées et stockées de manière structurée dans le Data Lake S3, prêtes à être consommées par l'équipe Data Science.
+
+\vspace{0.3cm}
+\textbf{Partie 2 : Plateforme MLOps (Standard AWS)} \\
+Une fois les données propres disponibles sur S3, nous utilisons \textbf{exactement l'architecture MLOps de référence proposée par AWS} \cite{79, 83}. 
+
+Le déploiement de l'infrastructure et des pipelines repose sur la chaîne de CI/CD suivante :
+\begin{center}
+    \textbf{GitHub} $\rightarrow$ \textbf{GitHub Actions} $\rightarrow$ \textbf{Terraform} $\rightarrow$ \textbf{AWS} $\rightarrow$ \textbf{Amazon SageMaker Studio}
+\end{center}
+
+\textbf{Le flux de travail du Data Scientist :}
+\begin{enumerate}
+    \item \textbf{Initialisation :} Le Data Scientist ouvre son environnement de développement dans \textit{Amazon SageMaker Studio}.
+    \item \textbf{Accès aux données :} Il retrouve automatiquement les données prêtes à l'emploi (les répertoires \texttt{train/}, \texttt{validation/} et \texttt{test/} générés par EMR) directement depuis le bucket S3.
+    \item \textbf{Développement :} Il développe et expérimente son modèle depuis son Notebook Jupyter.
+\end{enumerate}
+
+\textbf{Le pipeline de mise en production :} \\
+Une fois le Notebook terminé et le code poussé, le pipeline MLOps natif (piloté par GitHub Actions et SageMaker Pipelines) prend le relais avec le flux d'exécution standard suivant \cite{79, 83} :
+
+\begin{center}
+    \textbf{Notebook} \\
+    $\downarrow$ \\
+    \textbf{Training Job} (Entraînement du modèle sur les données de S3) \\
+    $\downarrow$ \\
+    \textbf{GitHub Actions} (Orchestration du pipeline CI/CD) \\
+    $\downarrow$ \\
+    \textbf{Model Registry} (Enregistrement et versionnage du modèle) \\
+    $\downarrow$ \\
+    \textbf{Approval} (Validation manuelle des performances) \\
+    $\downarrow$ \\
+    \textbf{Deployment Job} (Déploiement du modèle sur l'infrastructure d'inférence) \\
+    $\downarrow$ \\
+    \textbf{Deployment} (Déploiement de l'infrastructure d'inférence) \\
+    $\downarrow$ \\
+    \textbf{Endpoint} (Mise à disposition du point de terminaison pour l'inférence)
+\end{center}
+
+Cette séparation stricte garantit que la plateforme MLOps reste agile et performante (Partie 2), tandis que la lourdeur du traitement de la volumétrie croissante des images est intégralement absorbée par la puissance brute du cluster Big Data (Partie 1). Le chapitre suivant sera consacré à la méthodologie de ce projet, en détaillant l'analyse des besoins, les diagrammes modélisant le système, et la conception logique et physique de cette architecture Cloud.
