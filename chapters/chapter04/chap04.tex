@@ -10,7 +10,7 @@
 \newpage
 
 % ==============================================================================
-\section{Déploiement de l'infrastructure et automatisation (IaC \& CI/CD)}
+\section{Infrastructure et automatisation}
 \label{sec:deploiement_infra_auto}
 % ==============================================================================
 
@@ -26,9 +26,9 @@ L'infrastructure Cloud sous-jacente est entièrement déclarée et provisionnée
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/terraform_code.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du code Terraform HCL
-    \caption{Extrait du script de configuration Terraform (Fichiers HCL pour le réseau et les rôles IAM)}
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-08-17 10-53-17.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du code Terraform HCL
+    \caption{Extrait du script de configuration Terraform (Fichiers HCL pour le réseau)}
     \label{fig:terraform_code}
 \end{figure}
 
@@ -39,8 +39,8 @@ L'infrastructure Cloud sous-jacente est entièrement déclarée et provisionnée
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/vpc.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran de la console VPC (vpc.png)
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-08-17 11-03-49.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran de la console VPC (vpc.png)
     \caption{Configuration réseau sous Amazon VPC et isolation des sous-réseaux}
     \label{fig:vpc_config}
 \end{figure}
@@ -71,8 +71,8 @@ Toutes les données stockées dans ce Data Lake ainsi que les métadonnées asso
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/tree.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran S3 (tree.png)
+    \includegraphics[width=0.9\textwidth]{images/tree.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran S3 (tree.png)
     \caption{Organisation de l'arborescence du Data Lake dans le bucket Amazon S3}
     \label{fig:tree_s3}
 \end{figure}
@@ -88,14 +88,22 @@ Le déploiement et la mise à jour continue de l'infrastructure et des applicati
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/github_actions_pipeline.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du pipeline GitHub Actions
-    \caption{Suivi d'exécution d'un pipeline de provisionnement d'infrastructure IaC dans GitHub Actions}
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-08-17 11-13-01.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du pipeline GitHub Actions
+    \caption{Historique d'exécution du pipeline de provisionnement d'infrastructure IaC dans GitHub Actions}
+    \label{fig:github_actions}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-08-17 11-14-55.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du pipeline GitHub Actions
+    \caption{Étape d'exécution d'un pipeline de provisionnement d'infrastructure IaC dans GitHub Actions Terraform apply}
     \label{fig:github_actions}
 \end{figure}
 
 % ==============================================================================
-\section{Implémentation du pipeline Data Engineering (EMR \& PySpark)}
+\section{Implémentation du pipeline Data Engineering}
 \label{sec:impl_data_engineering}
 % ==============================================================================
 
@@ -113,8 +121,8 @@ Le moteur de calcul distribué repose sur le service managé \textbf{Amazon EMR}
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/cluster_emr_actif.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du cluster EMR actif
+    \includegraphics[width=0.9\textwidth]{images/cluster_emr1.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du cluster EMR actif
     \caption{Console AWS présentant le statut actif et la topologie du cluster Amazon EMR (1 Master / 4 Workers)}
     \label{fig:cluster_emr_actif}
 \end{figure}
@@ -123,8 +131,8 @@ L'administration et la soumission des tâches de calcul s'effectuent par une lia
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/connexion_ssh_master_node.png}
-    \rule{0.9\textwidth}{4cm} % Remplacer par la capture d'écran du terminal SSH
+    \includegraphics[width=0.9\textwidth]{images/connexion_ssh_master_node.png}
+    %\rule{0.9\textwidth}{4cm} % Remplacer par la capture d'écran du terminal SSH
     \caption{Terminal de connexion sécurisée au nœud maître (Master Node) d'Amazon EMR via SSH}
     \label{fig:ssh_master_node}
 \end{figure}
@@ -141,17 +149,9 @@ Le pipeline de calcul distribué exécute de manière séquentielle les opérati
     \item[$\bullet$] \textbf{Partitionnement et écriture des jeux de données :} Les descripteurs extraits (features ACP) sont structurés, puis automatiquement segmentés en trois jeux de données distincts : entraînement (\texttt{train/}), validation (\texttt{validation/}) et test (\texttt{test/}). Ces jeux de données nettoyés sont sauvegardés au format optimisé Parquet directement dans le répertoire \texttt{/PCA/} du Data Lake Amazon S3, prêts pour l'étape de modélisation.
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/pyspark_code.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du code PySpark
-    \caption{Extrait du script PySpark implémentant la parallélisation de l'ACP sur le cluster}
-    \label{fig:pyspark_code}
-\end{figure}
-
 
 % ==============================================================================
-\section{Implémentation de la plateforme MLOps (Amazon SageMaker)}
+\section{Implémentation de la plateforme MLOps}
 \label{sec:impl_plateforme_mlops}
 % ==============================================================================
 
@@ -167,8 +167,8 @@ L'activité quotidienne de modélisation et d'expérimentation du Data Scientist
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/sagemaker_studio.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran de l'environnement SageMaker Studio
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-07-24 11-12-55.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran de l'environnement SageMaker Studio
     \caption{Espace de travail Jupyter actif au sein de la console Amazon SageMaker Studio}
     \label{fig:sagemaker_studio}
 \end{figure}
@@ -184,8 +184,8 @@ Le passage à l'échelle et la fiabilité de notre système exigent que chaque m
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/model_registry.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du Model Registry
+    \includegraphics[width=0.9\textwidth]{images/Screenshot from 2026-08-17 11-36-37.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran du Model Registry
     \caption{Interface du registre de modèles (Model Registry) présentant les versions et l'historique d'approbation}
     \label{fig:model_registry}
 \end{figure}
@@ -199,17 +199,10 @@ Le déploiement du modèle approuvé pour la production s'appuie sur le mécanis
     \item[$\bullet$] \textbf{Collecte et stockage des résultats d'inférence :} Lorsqu'un utilisateur (Data Analyst) soumet de nouvelles images agricoles via l'API, le point de terminaison exécute la prédiction en temps réel et renvoie le diagnostic (détection d'anomalies). Les prédictions ainsi générées sont automatiquement horodatées et écrites dans le répertoire \texttt{/results/} de notre Data Lake S3 pour permettre un audit futur et le suivi des performances du système.
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/sagemaker_endpoint.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran de l'Endpoint actif
-    \caption{Statut d'approbation manuelle et état actif du point de terminaison (Endpoint d'inférence)}
-    \label{fig:sagemaker_endpoint}
-\end{figure}
 
 
 % ==============================================================================
-\section{Résultats, métriques et analyse des coûts (FinOps)}
+\section{Résultats, métriques et analyse des coûts}
 \label{sec:resultats_metriques_couts}
 % ==============================================================================
 
@@ -226,8 +219,8 @@ La supervision active et la traçabilité de cette exécution ont été assurée
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.9\textwidth]{chapters/chapter04/fig04/gui_apache_spark_execution_time.png}
-    \rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran Spark UI (gui_apache_spark_execution_time.png)
+    \includegraphics[width=0.9\textwidth]{images/gui_apache_spark_execution_time.png}
+    %\rule{0.9\textwidth}{5cm} % Remplacer par la capture d'écran Spark UI (gui_apache_spark_execution_time.png)
     \caption{Interface Apache Spark UI présentant le suivi d'exécution des tâches distribuées sur le cluster}
     \label{fig:spark_ui_execution}
 \end{figure}
@@ -250,8 +243,6 @@ Deux leviers principaux ont permis cette optimisation massive :
     \item[$\bullet$] \textbf{L'éphémérité du cluster de calcul :} Grâce à la configuration d'une politique d'auto-destruction après deux heures d'inactivité, le cluster EMR n'a été facturé que pour la durée stricte des traitements de préparation. Les ressources de calcul n'ont généré aucun surcoût inutile en dehors des fenêtres d'exécution.
 \end{itemize}
 
-Le tableau ci-dessous détaille la répartition des coûts réels observés sur la plateforme lors de notre phase de test et d'évaluation mensuelle :
-
 \begin{table}[H]
 \centering
 \caption{Répartition des coûts mensuels réels par service AWS (approche FinOps)}
@@ -259,12 +250,14 @@ Le tableau ci-dessous détaille la répartition des coûts réels observés sur 
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{|l|l|p{8cm}|}
 \hline
-\rowcolor{darkgreen!20} \textbf{Service AWS} & \textbf{Coût mensuel (\texteuro)} & \textbf{Justification opérationnelle et optimisation} \\ \hline
-\textbf{Amazon S3} & 1,45 & Stockage durable de 70~Go d'images agricoles brutes et de features ACP (Classe S3 Standard). \\ \hline
-\textbf{Amazon EMR / EC2} & 6,80 & Cluster de calcul éphémère (1 instance On-Demand, 4 instances Spot), actif uniquement pour la préparation. \\ \hline
-\textbf{Amazon SageMaker} & 12,30 & Environnement interactif (Studio) et provisionnement temporaire du point de terminaison pour l'inférence. \\ \hline
-\textbf{VPC \& Réseau} & 0,95 & Trafic de données interne sécurisé et transit via NAT Gateway. \\ \hline
-\rowcolor{gray!10} \textbf{Total Général} & \textbf{21,50} & \textbf{Budget total maîtrisé respectant les contraintes financières de l'organisation.} \\ \hline
+\rowcolor{darkgreen!20} \textbf{Service AWS} & \textbf{Coût mensuel (\$)} & \textbf{Justification opérationnelle et optimisation} \\ \hline
+\textbf{Amazon Virtual Private Cloud} & 85,47 & Trafic de données interne sécurisé, passerelles NAT et gestion des sous-réseaux. \\ \hline
+\textbf{EC2 - Other} & 27,26 & Volumes EBS, adresses IP élastiques et ressources associées aux instances. \\ \hline
+\textbf{Amazon EC2 (Compute)} & 3,52 & Instances de calcul pour l'exécution des traitements et charges de travail. \\ \hline
+\textbf{AWS Key Management Service} & 0,72 & Gestion des clés de chiffrement pour la sécurité des données au repos et en transit. \\ \hline
+\textbf{Amazon Elastic MapReduce} & 0,71 & Cluster de calcul pour le traitement des données massives. \\ \hline
+\textbf{Autres (Others)} & 0,28 & Services divers et frais annexes de la plateforme. \\ \hline
+\rowcolor{gray!10} \textbf{Total Général} & \textbf{117,95} & \textbf{Budget total consolidé observé en dollars sur la période de juillet 2026.} \\ \hline
 \end{tabular}
 \end{table}
 
@@ -279,13 +272,12 @@ Pour synthétiser la validation de l'architecture, la matrice ci-dessous met en 
 \hline
 \rowcolor{darkgreen!20} \textbf{Exigence initiale} & \textbf{Résultat cible attendu} & \textbf{Mesure réelle constatée} \\ \hline
 \textbf{Scalabilité} & Traitement de gros volumes d'images sans crash & Zéro échec d'exécution, calcul parallèle stable sur 4 Workers. \\ \hline
-\textbf{Faible Latence} & Temps de réponse d'inférence sous les 100 ms & Latence moyenne mesurée à 45 ms sur le SageMaker Endpoint. \\ \hline
+\textbf{Faible Latence} & Temps de réponse d'inférence sous les 100 ms & Latence moyenne mesurée à 45 ms sur le point de terminaison. \\ \hline
 \textbf{Sécurité} & Chiffrement total et isolation logique & Chiffrement KMS actif au repos/transit, VPC privé sans exposition publique. \\ \hline
 \textbf{Supervision} & Logs d'erreurs et CPU centralisés & Centralisation opérationnelle et fonctionnelle dans CloudWatch. \\ \hline
-\textbf{Optimisation FinOps} & Coût d'un cycle d'exécution sous le seuil des 10\,\texteuro & Coût par cycle d'exécution complet mesuré à 1,85\,\texteuro{} grâce aux instances Spot. \\ \hline
+\textbf{Optimisation FinOps} & Coût mensuel global maîtrisé et suivi & Coût mensuel total mesuré à 117,95\,\$ selon la console de gestion Billing. \\ \hline
 \end{tabular}
 \end{table}
-
 
 % ==============================================================================
 \section{Résumé du chapitre}
@@ -299,7 +291,7 @@ Ce chapitre a permis de concrétiser l'architecture hybride conçue pour répond
     \item[$\bullet$] \textbf{La gouvernance du Data Lake S3 :} Le stockage centralisé sous \textbf{Amazon S3} a été structuré de manière hermétique pour héberger les images brutes, les descripteurs ACP propres, les artefacts de modèles et les résultats d'inférence, tout en appliquant un chiffrement fort via \textbf{AWS KMS}.
     \item[$\bullet$] \textbf{La puissance du calcul distribué :} La brique de Data Engineering reposant sur \textbf{Amazon EMR} et \textbf{PySpark} a démontré sa capacité à ingérer et à prétraiter de grands volumes d'images agricoles. L'Analyse en Composantes Principales (ACP) distribuée a permis de réduire efficacement la dimensionnalité des données sans saturer la mémoire vive des instances.
     \item[$\bullet$] \textbf{L'industrialisation MLOps :} La mise en œuvre d'\textbf{Amazon SageMaker} a permis de standardiser le cycle de vie du modèle. Depuis les environnements \textbf{SageMaker Studio}, les modèles sont entraînés, versionnés dans le \textbf{Model Registry}, validés par le \textbf{Lead Data}, puis exposés de manière fiable sous forme d'API REST résilientes via un \textbf{SageMaker Endpoint}.
-    \item[$\bullet$] \textbf{La validation technique et FinOps :} Les tests d'évaluation ont confirmé la viabilité de la solution avec une latence d'inférence moyenne de 45~ms. L'approche FinOps, s'appuyant sur l'éphémérité du cluster EMR et l'utilisation d'instances EC2 Spot, a permis de ramener le coût d'un cycle d'exécution complet à seulement 1,85~\texteuro, garantissant ainsi la soutenabilité financière du projet.
+    \item[$\bullet$] \textbf{La validation technique et FinOps :} Les tests d'évaluation ont confirmé la viabilité de la solution avec une latence d'inférence moyenne de 45~ms. L'approche FinOps, s'appuyant sur l'éphémérité du cluster EMR et l'utilisation d'instances EC2 Spot, a permis de maintenir une soutenabilité financière avec un budget mensuel global maîtrisé de 117,95~\$.
 \end{itemize}
 
 L'ensemble des exigences fonctionnelles et non fonctionnelles étant désormais implémentées et validées, nous pouvons à présent formuler la conclusion générale de ce travail de recherche et dresser les perspectives d'évolution futures du système.

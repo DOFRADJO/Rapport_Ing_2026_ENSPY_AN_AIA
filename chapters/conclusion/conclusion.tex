@@ -1,17 +1,15 @@
 \chapter*{Conclusion générale}
 \label{chap:conclusion_generale}
 \addstarredchapter{Conclusion générale et Perspectives}
-\markboth{Conclusi générale}{}
+\markboth{Conclusion générale}{}
 
-L'objectif principal de ce mémoire était de concevoir et d'implémenter une architecture MLOps Cloud robuste, sécurisée et économiquement viable sur Amazon Web Services (AWS) pour répondre aux défis du passage à l'échelle et de la pérennisation d'un modèle de vision par ordinateur appliqué à la détection d'anomalies sur les cultures agricoles. 
-
-Avant nos travaux, l'exécution locale et monolithique du modèle se heurtait à des limites physiques critiques, telles que la saturation de la mémoire vive (RAM), l'impossibilité de gérer de fortes volumétries d'images haute résolution et l'absence de suivi de la dérive des données. Pour lever ces verrous d'ingénierie, nous avons mené une démarche rigoureuse structurée en plusieurs étapes clés :
+L'objectif principal de ce mémoire était de concevoir et d'implémenter une architecture MLOps Cloud robuste, sécurisée et économiquement viable sur Amazon Web Services (AWS) pour répondre aux défis du passage à l'échelle et de la pérennisation d'un modèle de vision par ordinateur appliqué à la détection d'anomalies sur les cultures agricoles. Avant nos travaux, l'exécution locale et monolithique du modèle se heurtait à des limites physiques critiques, telles que la saturation de la mémoire vive (RAM), l'impossibilité de gérer de fortes volumétries d'images haute résolution et l'absence de suivi de la dérive des données. Pour lever ces verrous d'ingénierie, nous avons mené une démarche rigoureuse structurée en plusieurs étapes clés :
 
 \begin{itemize}
     \item[$\bullet$] \textbf{Justification et positionnement technologique :} Une analyse approfondie des architectures de référence déployées par les leaders de l'industrie (Netflix, Capital One, Riot Games, Expedia) a permis de dégager un consensus clair : l'obligation de découpler strictement la gestion des données massives (Data Lake, calcul distribué) du cycle de vie du Machine Learning.
     \item[$\bullet$] \textbf{Conception d'une architecture hybride découpée :} Nous avons conçu un système articulé autour d'un découplage strict entre le stockage et le calcul. Ce système sépare physiquement l'ingénierie des données (Data Engineering sur Amazon EMR et PySpark) de l'orchestration MLOps (Amazon SageMaker).
     \item[$\bullet$] \textbf{Automatisation de l'infrastructure et CI/CD :} Les fondations de l'environnement Cloud (VPC, sous-réseaux isolés, rôles IAM restrictifs et bucket S3) ont été entièrement codifiées via \textbf{Terraform}. Le déploiement continu et la traçabilité des modifications sont gérés par des pipelines automatisés sous \textbf{GitHub Actions}.
-    \item[$\bullet$] \textbf{Validation technique et financière (FinOps) :} Les tests d'évaluation en production ont confirmé l'atteinte de l'ensemble des exigences non fonctionnelles. Le cluster éphémère Amazon EMR a parallélisé l'ingestion et l'Analyse en Composantes Principales (ACP) sur les nœuds de calcul sans saturation mémoire. L'inférence en temps réel affiche une latence moyenne de 45~ms sur le point de terminaison SageMaker. Enfin, l'utilisation d'instances EC2 Spot et l'éphémérité du cluster de préparation ont réduit le coût d'un cycle d'exécution complet à seulement 1,85~\texteuro, pour un budget mensuel total parfaitement maîtrisé de 21,50~\texteuro.
+    \item[$\bullet$] \textbf{Validation technique et financière (FinOps) :} Les tests d'évaluation en production ont confirmé l'atteinte de l'ensemble des exigences non fonctionnelles. Le cluster éphémère Amazon EMR a parallélisé l'ingestion et l'Analyse en Composantes Principales (ACP) sur les nœuds de calcul sans saturation mémoire. L'inférence en temps réel affiche une latence moyenne de 45~ms sur le point de terminaison SageMaker. Enfin, l'utilisation d'instances EC2 Spot et l'éphémérité du cluster de préparation ont permis d'optimiser les coûts, pour un budget mensuel total parfaitement maîtrisé de 117,95~\$.
 \end{itemize}
 
 
@@ -28,4 +26,3 @@ Bien que l'architecture implémentée réponde parfaitement aux besoins opérati
 \end{itemize}
 
 En conclusion, ce projet démontre qu'une transition maîtrisée vers le Cloud Computing, guidée par les méthodologies du MLOps et du FinOps, permet de transformer un modèle expérimental local en une plateforme industrielle hautement disponible, scalable et financièrement soutenable, ouvrant la voie à une exploitation pérenne de l'intelligence artificielle dans le secteur agricole.
-
