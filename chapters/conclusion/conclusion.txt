@@ -1,31 +1,28 @@
-\chapter*{CONCLUSION GÉNÉRALE}
-\label{chap:conclusion}
-\markboth{Conclusion Générale}{}
-\addstarredchapter{Conclusion Générale}
-Cette dernière section résume les principales contributions du projet, met en évidence ses limites et décrit les perspectives futures et un plan d'amélioration à partir du système existant.
+\chapter*{Conclusion générale}
+\label{chap:conclusion_generale}
+\addstarredchapter{Conclusion générale et Perspectives}
+\markboth{Conclusion générale}{}
 
-\section*{Rappel du problème}
-
-Le présent travail s'est concentré sur la résolution des problèmes de saturation matérielle rencontrés par le client de DESEMITS. L'enjeu principal était d'industrialiser un modèle expérimental de vision par ordinateur, dont l'exploitation en production était freinée par les limites de calcul et de mémoire d'une exécution locale monolithique, incapable de traiter l'augmentation massive des images agricoles.
-
-\section*{Solution : Démarche, résultats et intérêt}
-
-Pour surmonter ces obstacles, notre démarche s'est appuyée sur les principes du \textit{Machine Learning Operations} (MLOps) et du calcul distribué. L'analyse des travaux existants a guidé la conception d'une architecture Cloud sur-mesure, dissociant strictement le stockage massif (Amazon S3) de la puissance de calcul (Amazon EMR). L'implémentation de cette solution à l'aide d'Apache Spark a permis de paralléliser efficacement le prétraitement par réduction de dimension (ACP) et l'inférence du réseau de neurones convolutifs.
-
-Les résultats obtenus valident notre hypothèse de départ : le couplage de services Cloud managés et de pipelines distribués permet non seulement d'assurer le passage à l'échelle du système, mais également de maîtriser drastiquement les coûts opérationnels (FinOps) grâce à l'allocation éphémère des clusters.
-
-\section*{Limites}
-
-Bien que les résultats obtenus posent les fondations robustes d'un système intelligent et hautement disponible, ce travail présente certaines limites. Tout d'abord, l'architecture nécessite encore d'être éprouvée sur des volumétries de données plus extrêmes. Par la suite, le déploiement manuel de l'infrastructure via la console par l'administrateur, ainsi que la nécessité pour l'opérateur métier d'exécuter manuellement ses scripts, constituent un frein à l'automatisation complète du cycle de vie du modèle. Ces limites opérationnelles sont autant de défis qui restent à relever.
-
-\section*{Perspectives d’amélioration}
-
-Pour pallier ces limites et poursuivre l'industrialisation du système, les perspectives futures incluent l'intégration de nouveaux outils visant l'automatisation totale :
+L'objectif principal de ce mémoire était de concevoir et d'implémenter une architecture MLOps Cloud robuste, sécurisée et économiquement viable sur Amazon Web Services (AWS) pour répondre aux défis du passage à l'échelle et de la pérennisation d'un modèle de vision par ordinateur appliqué à la détection d'anomalies sur les cultures agricoles. Avant nos travaux, l'exécution locale et monolithique du modèle se heurtait à des limites physiques critiques, telles que la saturation de la mémoire vive (RAM), l'impossibilité de gérer de fortes volumétries d'images haute résolution et l'absence de suivi de la dérive des données. Pour lever ces verrous d'ingénierie, nous avons mené une démarche rigoureuse structurée en plusieurs étapes clés :
 
 \begin{itemize}
-    \item[$\bullet$] \textbf{Automatisation de l'infrastructure :} Le déploiement du cluster, aujourd'hui manuel, pourrait être entièrement scripté via l'Infrastructure as Code (IaC), permettant un déclenchement automatique dès l'arrivée de nouvelles images sur S3.
-    \item[$\bullet$] \textbf{Orchestration des Workflows :} L'intégration d'un outil comme \textbf{Apache Airflow} permettrait d'enchaîner automatiquement les différentes étapes du pipeline sans exécution manuelle des scripts Jupyter.
-    \item[$\bullet$] \textbf{Gouvernance MLOps complète :} L'ajout d'outils tels que \textbf{MLflow} ou \textbf{Amazon SageMaker Pipelines} constituerait une évolution naturelle pour automatiser le réentraînement des modèles (Continuous Training) et assurer un contrôle strict du versionnage des algorithmes au fil des saisons agricoles.
+    \item[$\bullet$] \textbf{Justification et positionnement technologique :} Une analyse approfondie des architectures de référence déployées par les leaders de l'industrie (Netflix, Capital One, Riot Games, Expedia) a permis de dégager un consensus clair : l'obligation de découpler strictement la gestion des données massives (Data Lake, calcul distribué) du cycle de vie du Machine Learning.
+    \item[$\bullet$] \textbf{Conception d'une architecture hybride découpée :} Nous avons conçu un système articulé autour d'un découplage strict entre le stockage et le calcul. Ce système sépare physiquement l'ingénierie des données (Data Engineering sur Amazon EMR et PySpark) de l'orchestration MLOps (Amazon SageMaker).
+    \item[$\bullet$] \textbf{Automatisation de l'infrastructure et CI/CD :} Les fondations de l'environnement Cloud (VPC, sous-réseaux isolés, rôles IAM restrictifs et bucket S3) ont été entièrement codifiées via \textbf{Terraform}. Le déploiement continu et la traçabilité des modifications sont gérés par des pipelines automatisés sous \textbf{GitHub Actions}.
+    \item[$\bullet$] \textbf{Validation technique et financière (FinOps) :} Les tests d'évaluation en production ont confirmé l'atteinte de l'ensemble des exigences non fonctionnelles. Le cluster éphémère Amazon EMR a parallélisé l'ingestion et l'Analyse en Composantes Principales (ACP) sur les nœuds de calcul sans saturation mémoire. L'inférence en temps réel affiche une latence moyenne de 45~ms sur le point de terminaison SageMaker. Enfin, l'utilisation d'instances EC2 Spot et l'éphémérité du cluster de préparation ont permis d'optimiser les coûts, pour un budget mensuel total parfaitement maîtrisé de 117,95~\$.
 \end{itemize}
 
-En ouvrant la voie à l'intégration de ces outils de surveillance et de réentraînement continu, ce travail démontre que l'avenir de l'intelligence artificielle ne réside plus uniquement dans l'optimisation des algorithmes, mais dans l'excellence de l'ingénierie logicielle et Cloud qui les supporte.
+
+% ==============================================================================
+\section*{Perspectives d'évolution}
+% ==============================================================================
+
+Bien que l'architecture implémentée réponde parfaitement aux besoins opérationnels et financiers immédiats, ce travail pose les bases de plusieurs perspectives d'ingénierie majeures pour accroître la maturité industrielle de la plateforme :
+
+\begin{itemize}
+    \item[$\bullet$] \textbf{Automatisation du réentraînement continu (Continuous Training) :} À ce jour, la validation et le réentraînement des modèles nécessitent une action manuelle. Une perspective essentielle consiste à implémenter une boucle de rétroaction automatisée pour lutter contre la dérive des données (\textit{Data Drift}). En configurant un test statistique de Kolmogorov-Smirnov (seuil de tolérance KS $> 0.20$) comparant la distribution des nouvelles images agricoles avec le jeu d'entraînement initial, Amazon CloudWatch pourra automatiquement déclencher un pipeline de réentraînement via Amazon SageMaker Pipelines dès qu'une dégradation de la pertinence algorithmique est mesurée.
+    \item[$\bullet$] \textbf{Orchestration avancée des workflows :} L'intégration d'un orchestrateur externe tel qu'\textbf{Apache Airflow} permettrait d'unifier la logique d'exécution de bout en bout. Cet outil permettrait d'enchaîner automatiquement l'allumage du cluster Amazon EMR, l'exécution du script PySpark, la génération des datasets ACP sur S3, puis le déclenchement du job d'apprentissage sur SageMaker sans aucune intervention humaine.
+    \item[$\bullet$] \textbf{Gouvernance et audit de sécurité approfondis :} Pour se conformer aux exigences réglementaires et renforcer la protection des données propriétaires, l'intégration d'\textbf{Amazon Macie} pourrait être envisagée afin de découvrir et protéger automatiquement d'éventuelles informations sensibles au sein du Data Lake. De plus, l'intégration d'\textbf{AWS KMS} avec des clés gérées par le client pourrait être étendue à l'ensemble des journaux d'exécution système.
+\end{itemize}
+
+En conclusion, ce projet démontre qu'une transition maîtrisée vers le Cloud Computing, guidée par les méthodologies du MLOps et du FinOps, permet de transformer un modèle expérimental local en une plateforme industrielle hautement disponible, scalable et financièrement soutenable, ouvrant la voie à une exploitation pérenne de l'intelligence artificielle dans le secteur agricole.
