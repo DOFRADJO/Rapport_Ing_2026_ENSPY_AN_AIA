@@ -405,7 +405,7 @@ Toute l'architecture repose sur une fondation sécurisée pour protéger les don
 Cette couche absorbe la charge lourde du traitement des images agricoles.
 \begin{itemize}
     \item[$\bullet$] Amazon S3 (Data Lake) : Service de stockage objet agissant comme le cœur de l'architecture. Il stocke les images brutes, les données transformées (après ACP) et les artefacts des modèles de manière hautement durable et chiffrée.
-    \item[$\bullet$] Amazon EMR (Elastic MapReduce) : Le moteur de calcul distribué (utilisant \textit{Apache Spark/PySpark}). Pour respecter nos contraintes FinOps, ce cluster est \textbf{éphémère} : il est instancié avec des instances \textit{Spot} (à coût réduit) uniquement pour la durée de la génération des datasets, puis détruit automatiquement.
+    \item[$\bullet$] Amazon EMR (Elastic MapReduce) : Le moteur de calcul distribué (utilisant \textit{Apache Spark/PySpark}). Pour respecter nos contraintes FinOps, ce cluster est éphémère : il est instancié avec des instances \textit{Spot} (à coût réduit) uniquement pour la durée de la génération des datasets, puis détruit automatiquement.
 \end{itemize}
 
 \subsubsection{Couche 3 : Plateforme MLOps (Partie 2)}
